@@ -29,13 +29,13 @@ sample.cols <- 4:ncol(df)
 df[ , sample.cols] <- apply(df[sample.cols], 2, function(x) replace(x, x==1, NA))
 # define normalization function ("none", "normalizeMedianValues",
 # "normalize.quantiles", "normalize.quantiles.robust", "normalize.quantiles.in.blocks")
-norm.function <- "none"
+norm.function <- "normalize.quantiles"
 # flag for plot controls
-plot.norm <- TRUE
+plot.norm <- TRUE; plot.to.png=TRUE
 # aggregation method, one of ("sum", "weightedsum", "mean", "weightedmean", "wgeomean")
 method <- "weightedsum"
 # filename prefix
-filename="diffacto_sparse_noNorm_"
+filename="diffacto_sparse_quantNorm_"
 # define the output directory(s) where tables are saved
 output_dir <- list(
   "/media/ProteomicsCyano/MS_analysis/20181204/Diffacto/quantification/",
@@ -125,7 +125,7 @@ plot.function <- function(df, df.norm) {
   # reduce data size by random sampling to n points per sample
   if (nrow(df) > 1000) {
     sam = sample(1:nrow(df), 1000)
-    cat("Reducing plot size to 1000 data points per sample...")
+    cat("Reducing plot size to 1000 data points per sample...\n")
   } else {
     sam = nrow(df.norm)
   }
@@ -141,10 +141,13 @@ plot.function <- function(df, df.norm) {
   # and plot using lattice
   xyplot(log10(intensity) ~ number | sample, .,
     par.settings=custom.lattice, type="l",
+    as.table=TRUE,
     groups=normalized, auto.key=list(columns=2, lines=TRUE, points=FALSE),
-    panel=panel.superpose,
-    panel.groups=function(x, y, ...) {
+    panel=function(x, y, ...) {
       panel.grid(h=-1, v=-1, col=grey(0.9))
+      panel.superpose(x, y, ...)
+    },
+    panel.groups=function(x, y, ...) {
       panel.xyplot(x, sort(y, na.last=TRUE), ...)
     }
   )
@@ -160,7 +163,17 @@ if (norm.function!="none") {
 
 # optional plot of normalized versus non-normalized data
 if (plot.norm & norm.function != "none") {
-  plot.function(df, df.norm) %>% print
+  normplot <- plot.function(df, df.norm)
+  if (plot.to.png) {
+    for (out in output_dir) {
+      fullfilename <- paste0(filename, method, ".png")
+      png(paste0(out, fullfilename), width=1000, height=1000, res=110)
+      print(normplot)
+      cat("writing", paste0(out, fullfilename), "...\n")
+      dev.off()
+    }
+  } else
+  print(normplot)
 }
 
 # apply aggregation with parameters for method, samples, 
@@ -177,11 +190,13 @@ colnames(df.result)[1] <- "protein"
 
 # remove ambiguous entries
 df.result <- subset(df.result, !grepl("CONT_|XXX_", protein))
+# and replace (near-) zeros with NA
+df.result[-1] <- apply(df.result[-1], 2, function(x) replace(x, x<=10, NA))
 
 # save results as CSV file
 fullfilename <- paste0(filename, method, ".csv")
 
-sapply(output_dir, function(out) {
+for (out in output_dir) {
   cat("writing", paste0(out, fullfilename), "...\n")
   write.csv(df.result, file=paste0(out, fullfilename))
-})
+}
