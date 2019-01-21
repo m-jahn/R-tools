@@ -15,27 +15,29 @@ library(latticeExtra)
 library(preprocessCore)
 library(limma)
 library(gtools)
+library(vsn)
 source("custom.theme.R")
 
 
 # DEFINE FUNCTION OPTIONS
 #
 # load raw data
-df <- read.table("/media/ProteomicsCyano/MS_analysis/20181204/Diffacto/peptides_DeMixQ_Diffacto_sparse.tsv",
+df <- read.table("/media/ProteomicsCyano/MS_analysis/20181204/Diffacto/peptides_DeMixQ_Diffacto.tsv",
   header=TRUE, stringsAsFactors=FALSE, sep="\t")
 # define value columns
 sample.cols <- 4:ncol(df)
 # replace '1' (DemixQ output for not-quantified) with NA
 df[ , sample.cols] <- apply(df[sample.cols], 2, function(x) replace(x, x==1, NA))
-# define normalization function ("none", "normalizeMedianValues",
-# "normalize.quantiles", "normalize.quantiles.robust", "normalize.quantiles.in.blocks")
-norm.function <- "normalize.quantiles"
+# define normalization function (one of "none", "normalizeMedianValues",
+# "normalize.quantiles", "normalize.quantiles.robust", 
+# "normalize.quantiles.in.blocks", "justvsn")
+norm.function <- "justvsn"
 # flag for plot controls
 plot.norm <- TRUE; plot.to.png=TRUE
 # aggregation method, one of ("sum", "weightedsum", "mean", "weightedmean", "wgeomean")
 method <- "weightedsum"
 # filename prefix
-filename="diffacto_sparse_quantNorm_"
+filename="diffacto_vsnNorm_"
 # define the output directory(s) where tables are saved
 output_dir <- list(
   "/media/ProteomicsCyano/MS_analysis/20181204/Diffacto/quantification/",
@@ -49,8 +51,13 @@ output_dir <- list(
 # it uses one of several normalization functions to re-scale the peptide
 # quantities of a sample to improve comparability and remove systematic bias
 # like different total sample concentration
-
-# normalization functions are taken from package preProcessCore that
+#
+# A simple normalization is based on aligning median of all samples.
+# Another normalization that was identified as superior is VSN normalization
+# that returns log2 transformed data. This is back-transformed to be
+# compatible with subsequent peptide aggregation.
+#
+# Some normalization functions are taken from package preProcessCore that
 # offers quantile normalization, robust quantile normalization, or block
 # quantile normalization. Quantile normalization uses a rank based approach
 # where intensities are rescaled between min, median and max. Use with care: 
@@ -77,6 +84,9 @@ apply.norm <- function(df, norm.function, sample.cols) {
       list(x=as.matrix(df[sample.cols]))
     ) %>%
     as.data.frame
+    if (norm.function=="justvsn") {
+      df[sample.cols] <- apply(df[sample.cols], 2, function(x) 2^x)
+    }
     df
   }
 }
