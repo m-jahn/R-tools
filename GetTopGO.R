@@ -1,10 +1,39 @@
+# CONVENIENCE FUNCTION TO TOPGO PACKAGE
+# from Rahnenfueher et al.
+# 
+# author: Michael Jahn
+# affiliation: Scilifelab - KTH, Stockholm
+# date: 2019-01-23
+
+
+# load required packages
 library("topGO")
 
-GetTopGO <- function(df, topNodes, cluster) {
+GetTopGO <- function(df=NULL, cluster.list=NULL, GeneID=NULL, 
+  Gene.ontology.IDs=NULL, topNodes=50, cluster) {
+  
   # prepare data structures
-  genelist <- df$cluster; names(genelist) <- df$protein
-  geneID2GO <- strsplit(df$Gene.ontology.IDs, "; ")
-  names(geneID2GO) <- df$protein
+  # if a data.frame is passed as main data structure it must contain
+  # three specific columns with cluster numbers, Gene IDs and GO terms.
+  # GO terms is a character vector with go IDs separated by '; '
+  if (class(df)=="data.frame" & 
+    all(c("cluster", "GeneID", "Gene.ontology.IDs") %in% colnames(df))) {
+
+    if (any(duplicated(df$GeneID))) 
+      stop("no duplicated Gene IDs allowed in data frame")
+    
+    genelist <- df$cluster; names(genelist) <- df$GeneID
+    geneID2GO <- strsplit(df$Gene.ontology.IDs, ";? ")
+    names(geneID2GO) <- df$GeneID
+    
+  } else if (!is.null(cluster.list) & !is.null(GeneID) & !is.null(Gene.ontology.IDs)) {
+    
+    genelist <- cluster.list; names(genelist) <- GeneID
+    geneID2GO <- strsplit(Gene.ontology.IDs, ";? ")
+    names(geneID2GO) <- GeneID
+    
+  } else 
+    stop("no data provided or data not sufficiently formatted")
   
   # create topGO object
   topGOdata <- new("topGOdata",
@@ -28,7 +57,7 @@ GetTopGO <- function(df, topNodes, cluster) {
     classicFisher=resultFisherClassic,
     weightedFisher=resultFisherWeight,
     elimFisher=resultFisherElim,
-    orderBy="classicFisher", ranksOf="classicFisher", 
+    orderBy="elimFisher", ranksOf="elimFisher", 
     topNodes=topNodes)
   
   # add gene names that are contained in the respective cluster/GO term
