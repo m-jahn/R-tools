@@ -37,3 +37,7 @@ KEGG Brite is a useful hierarchical gene annotation, such as: protein -> sub-pat
 ### sectorplot.R
 
 Function to plot sunburst treemaps, a circular hierarchical map, similar to Voronoi treemaps.
+
+### silhouette_analysis.R
+
+Wrapper function for iterative silhouette analysis of a clustering result. This can be performed to judge how well different clusters are separated in a gene expression dataset, and ultimately, to decide about the optimal cluster number. 
