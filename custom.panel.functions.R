@@ -106,3 +106,36 @@ panel.key <- function (labels, which.panel=1, pch=1, cex=0.8,
     upViewport()
   }
 }
+
+
+# NEW PANEL FUNCTION DRAWING QUADRANTS AND PERCENTAGES/QUADRANT
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+panel.quadrants <- function (x, y, h=NULL, v=NULL, col=grey(0.5),
+  lwd=trellis.par.get()$superpose.polygon$lwd[1], ...)
+{ 
+  # remove inf or NA values
+  index=!{is.infinite(x*y) | is.na(x*y)}
+  x=x[index]; y=y[index]
+  
+  # drawing the horizontal and vertical lines
+  if (is.null(h))
+    h=median(y)
+  if (is.null(v))
+    v=median(x)
+  panel.abline(h=h, v=v, lwd=lwd, col.line=col)
+  
+  # print percentages of the 4 quadrants as text
+  Q1 <- {x<v & y>h} %>% sum/length(x)
+  Q2 <- {x>v & y>h} %>% sum/length(x)
+  Q3 <- {x>v & y<h} %>% sum/length(x)
+  Q4 <- {x<v & y<h} %>% sum/length(x)
+  
+  with(current.panel.limits(), {
+     
+    panel.text(xlim[1]*0.8, ylim[2]*0.8, pos=4, labels=paste0(round(Q1*100, 1), "%"), col=col)
+    panel.text(xlim[2]*0.8, ylim[2]*0.8, pos=2, labels=paste0(round(Q2*100, 1), "%"), col=col)
+    panel.text(xlim[2]*0.8, ylim[1]*0.8, pos=2, labels=paste0(round(Q3*100, 1), "%"), col=col)
+    panel.text(xlim[1]*0.8, ylim[1]*0.8, pos=4, labels=paste0(round(Q4*100, 1), "%"), col=col)
+    
+  })
+}
