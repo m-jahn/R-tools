@@ -27,20 +27,28 @@ silhouetteAnalysis <- function(cluster.object, n.clusters) {
   
   # check object properties
   if (is.hclust(cluster.object)) 
-    print(summary(cluster.object))
+    print(cluster.object)
   else stop("cluster.object is not a hclust object\n")
   
   if (!is.numeric(n.clusters))
-    stop("n.clusters is not a numeric vector \n")
+    stop("n.clusters is not a numeric vector\n")
+  if (any(n.clusters <= 1))
+    stop("values of 1 or lower are not allowed for n.clusters\n")
   
   # loop through silhouette function
   dat <- lapply(n.clusters, function(x) {
+    
     si.summary <- silhouette(
       as.numeric(cutree(cluster, k=x)),
       dist(mat)
     ) %>% summary
     si.summary$n.clusters <- rep(x, x)
-    si.summary[c("n.clusters", "clus.avg.widths", "avg.width", "clus.sizes")] %>% as.data.frame
+    si.summary[c("n.clusters", 
+      "clus.avg.widths", 
+      "avg.width", 
+      "clus.sizes")] %>% 
+    as.data.frame
+    
   }) %>% ldply
   
   # plot single cluster averages
@@ -63,7 +71,6 @@ silhouetteAnalysis <- function(cluster.object, n.clusters) {
     panel=function(x, y, ...) {
       panel.grid(h=-1, v=-1, col=grey(0.9))
       panel.xyplot(x, y, ...)
-      panel.abline(v=5, lty=2, col=grey(0.3))
     }
   )
   
