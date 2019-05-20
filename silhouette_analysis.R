@@ -7,7 +7,6 @@
 
 
 # load required packages
-library(plyr)
 library(cluster)
 library(dendextend)
 library(lattice)
@@ -39,7 +38,7 @@ silhouetteAnalysis <- function(cluster.object, n.clusters) {
   dat <- lapply(n.clusters, function(x) {
     
     si.summary <- silhouette(
-      as.numeric(cutree(cluster, k=x)),
+      as.numeric(cutree(cluster.object, k = x)),
       dist(mat)
     ) %>% summary
     si.summary$n.clusters <- rep(x, x)
@@ -49,35 +48,37 @@ silhouetteAnalysis <- function(cluster.object, n.clusters) {
       "clus.sizes")] %>% 
     as.data.frame
     
-  }) %>% ldply
+  }) %>% plyr::ldply(.)
   
   # plot single cluster averages
-  plot.clusters <- xyplot(clus.avg.widths ~ as.numeric(clus.sizes.Freq) | factor(n.clusters), dat,
-    par.settings=custom.lattice, as.table=TRUE,
-    type=c("p"), pch=19,
-    xlab="cluster elements", ylab="silhouette width",
+  #as.numeric(clus.sizes.Freq)
+  plot.clusters <- xyplot(clus.avg.widths ~ as.numeric(clus.sizes.cl)
+      | factor(n.clusters), dat,
+    par.settings = custom.lattice, as.table = TRUE,
+    xlab = "cluster elements", ylab = "silhouette width",
     panel=function(x, y, ...) {
-      panel.grid(h=-1, v=-1, col=grey(0.9))
-      panel.xyplot(x, y, ...)
-      panel.ablineq(h=mean(y), lty=2, col=grey(0.3), fontfamily="FreeSans", pos=3)
+      panel.grid(h = -1, v = -1, col = grey(0.9))
+      panel.barplot(x, y, ewidth = 0.5, border = NULL, fill = grey(0.7))
+      panel.ablineq(h = mean(y), lty = 2, col = grey(0.3), fontfamily = "FreeSans", pos = 3)
     }
   )
   
   # and plot summary
   plot.summary <- xyplot(unique(dat$avg.width) ~ unique(dat$n.clusters),
-    par.settings=custom.lattice, as.table=TRUE,
-    type=c("p", "l"), pch=19,
-    xlab="number of clusters", ylab="average silhouette width",
-    panel=function(x, y, ...) {
-      panel.grid(h=-1, v=-1, col=grey(0.9))
+    par.settings = custom.lattice, as.table = TRUE,
+    type = c("p", "l"), pch = 19, col = grey(0.3),
+    xlab = "number of clusters", ylab = "average silhouette width",
+    panel = function(x, y, ...) {
+      panel.grid(h = -1, v = -1, col = grey(0.9))
       panel.xyplot(x, y, ...)
     }
   )
   
   # return list with results
+  cat("Silhouette analysis finished for clusters", min(n.clusters), "to", max(n.clusters))
   list(
-    dat=dat,
-    plot.clusters=plot.clusters,
-    plot.summary=plot.summary
+    dat = dat,
+    plot.clusters = plot.clusters,
+    plot.summary = plot.summary
   )
 }

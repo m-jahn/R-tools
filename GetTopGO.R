@@ -34,11 +34,11 @@ GetTopGO <- function(df=NULL, cluster=NULL, GeneID=NULL,
     names(geneID2GO) <- GeneID
     
     # return two lists of genes and GO terms
-    list(genelist=genelist, geneID2GO=geneID2GO)
+    list(genelist = genelist, geneID2GO = geneID2GO)
     
   }
   
-  if (class(df)=="data.frame" & 
+  if (class(df) == "data.frame" & 
     all(c("cluster", "GeneID", "Gene.ontology.IDs") %in% colnames(df))) {
     
     input <- with(df, 
@@ -54,10 +54,10 @@ GetTopGO <- function(df=NULL, cluster=NULL, GeneID=NULL,
   
   # create topGO object
   topGOdata <- new("topGOdata",
-    allGenes=input$genelist, 
-    annot=annFUN.gene2GO, 
-    gene2GO=input$geneID2GO,
-    geneSel=function(x) x==selected.cluster,
+    allGenes = input$genelist, 
+    annot = annFUN.gene2GO, 
+    gene2GO = input$geneID2GO,
+    geneSel = function(x) x == selected.cluster,
     ontology="BP")
 
   # We can use e.g. two types of test statistics: Fisher’s exact test which is based 
@@ -65,22 +65,22 @@ GetTopGO <- function(df=NULL, cluster=NULL, GeneID=NULL,
   # like test which computes enrichment based on gene scores (p-values). 
   # Kolmogorov-Smirnov is only valid when p-values are provided, not a 
   # set of interesting genes (e.g. a cluster)!
-  resultFisherClassic <- runTest(topGOdata, algorithm="classic", statistic="fisher")
-  resultFisherWeight <- runTest(topGOdata, algorithm="weight", statistic="fisher")
-  resultFisherElim <- runTest(topGOdata, algorithm="elim", statistic="fisher")
+  resultFisherClassic <- runTest(topGOdata, algorithm = "classic", statistic = "fisher")
+  resultFisherWeight <- runTest(topGOdata, algorithm = "weight", statistic = "fisher")
+  resultFisherElim <- runTest(topGOdata, algorithm = "elim", statistic = "fisher")
   
   # collect all test results in one table
   GenTab <- GenTable(topGOdata, 
-    classicFisher=resultFisherClassic,
-    weightedFisher=resultFisherWeight,
-    elimFisher=resultFisherElim,
-    orderBy="elimFisher", ranksOf="elimFisher", 
-    topNodes=topNodes)
+    classicFisher = resultFisherClassic,
+    weightedFisher = resultFisherWeight,
+    elimFisher = resultFisherElim,
+    orderBy = "elimFisher", ranksOf = "elimFisher", 
+    topNodes = topNodes)
   
   # add gene names that are contained in the respective cluster/GO term
   GenTab$SigGenes <- sapply(GenTab$GO.ID, function(term){
-    paste(collapse=",",
-      genesInTerm(topGOdata, term)[[1]][scoresInTerm(topGOdata, term)[[1]]==selected.cluster]
+    paste(collapse = ",",
+      genesInTerm(topGOdata, term)[[1]][scoresInTerm(topGOdata, term)[[1]] == selected.cluster]
     )
   })
   GenTab
