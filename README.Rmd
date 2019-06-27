@@ -1,37 +1,47 @@
-Rtools
-================
-Michael Jahn,
-2019-06-27
+---
+output: github_document
+title: "Rtools"
+author: "Michael Jahn, "
+date: "`r Sys.Date()`"
+#output: rmarkdown::html_vignette
+#vignette: >
+#  %\VignetteIndexEntry{}
+#  %\VignetteEngine{knitr::rmarkdown}
+#  %\VignetteEncoding{UTF-8}
+#
+# alternative to create README.md from R markdown source:
+# knitr::knit("README.Rmd", "README.md")
+---
 
-------------------------------------------------------------------------
+***
 
 Utility and wrapper functions for bioinformatics work
 
-Description
------------
+## Description
 
 This package contains utility and wrapper functions that I often use. It is not intended to be usable by the general public but is maintained as a package for accessability.
 
-Installation
-------------
+## Installation
 
 To install the package directly from github, use this function from devtools package in your R session:
 
-    require(devtools)
-    devtools::install_github("https://github.com/m-jahn/R-tools")
+```
+require(devtools)
+devtools::install_github("https://github.com/m-jahn/R-tools")
+```
 
-Utility functions
------------------
+## Utility functions
 
-### aggregate\_pep
+
+### aggregate_pep
 
 Aggregate peptide abundances to protein abundances
 
-### apply\_norm
+### apply_norm
 
 Apply normalization based on different published methods
 
-### baranyi\_fun
+### baranyi_fun
 
 Baranyi growth model
 
@@ -47,15 +57,15 @@ Custom grey lattice theme
 
 Convenience wrapper to TopGO package (Rahnenfueher et al.)
 
-### gompertzm\_fun
+### gompertzm_fun
 
 Modified Gompertz growth model
 
-### mutate\_cond
+### mutate_cond
 
 Conditional mutate(), mutating only selected observations (rows)
 
-### OD\_corr
+### OD_corr
 
 Optical density conversion of plate reader to photometer measurements (OD 600 nm)
 
@@ -79,7 +89,7 @@ Calculate and draw p-values in lattice plots
 
 Draw quadrants and quadrant statistics in lattice plots
 
-### parse\_kegg\_brite
+### parse_kegg_brite
 
 Parse Kegg Brite xml files step-by-step
 

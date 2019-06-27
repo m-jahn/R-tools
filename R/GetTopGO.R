@@ -1,16 +1,35 @@
-# CONVENIENCE FUNCTION TO TOPGO PACKAGE
-# from Rahnenfueher et al.
-# 
-# author: Michael Jahn
-# affiliation: Scilifelab - KTH, Stockholm
-# date: 2019-01-23
+#' Convenience wrapper to TopGO package (Rahnenfueher et al.)
+#' 
+#' This function carries out a TopGO gene ontology enrichment on a data set
+#' with custom protein/gene IDs and GO terms. The function takes as main 
+#' input a data frame with three specific columns, cluster numbers, Gene IDs, 
+#' and GO terms. Alternatively, these can also be supplied as three individual 
+#' lists.
+#' 
+#' @importFrom topGO GenTable
+#' @importFrom topGO runTest
+#' @importFrom topGO genesInTerm
+#' @importFrom topGO scoresInTerm
+#' @importFrom topGO annFUN.gene2GO
+#' 
+#' @param df an (optional) data.frame with the three columns specified below
+#' @param GeneID (character) The column containing gene IDs, alternatively a vector
+#' @param Gene.ontology.IDs (character) The column containing a list of GO terms for each gene, 
+#'   alternatively a vector with same order and length as 'GeneID'
+#' @param cluster (numeric, factor, character) the column containing a grouping variable, 
+#'   alternatively a vector with same order and length as 'GeneID'
+#' @param selected.cluster (character) the name of the group that is to be comapred to the background.
+#'   Must be one of 'cluster'
+#' @param topNodes (numeric) the max number of GO terms (nodes) to be returned by the function.
+#' 
+#' @return a data.frame with TOpGO gene enrichment results
+#' 
+#' @export
+# ------------------------------------------------------------------------------
 
-
-# load required packages
-library("topGO")
-
-GetTopGO <- function(df=NULL, cluster=NULL, GeneID=NULL, 
-  Gene.ontology.IDs=NULL, topNodes=50, selected.cluster) {
+GetTopGO <- function(df = NULL, GeneID = NULL, Gene.ontology.IDs = NULL, 
+  cluster = NULL, selected.cluster, topNodes = 50
+) {
   
   # prepare data structures
   # if a data.frame is passed as main data structure it must contain
@@ -55,22 +74,22 @@ GetTopGO <- function(df=NULL, cluster=NULL, GeneID=NULL,
   # create topGO object
   topGOdata <- new("topGOdata",
     allGenes = input$genelist, 
-    annot = annFUN.gene2GO, 
+    annot = topGO::annFUN.gene2GO, 
     gene2GO = input$geneID2GO,
     geneSel = function(x) x == selected.cluster,
-    ontology="BP")
+    ontology = "BP")
 
   # We can use e.g. two types of test statistics: Fisher’s exact test which is based 
   # on gene counts (e.g. genes from one cluster), and a Kolmogorov-Smirnov- 
   # like test which computes enrichment based on gene scores (p-values). 
   # Kolmogorov-Smirnov is only valid when p-values are provided, not a 
   # set of interesting genes (e.g. a cluster)!
-  resultFisherClassic <- runTest(topGOdata, algorithm = "classic", statistic = "fisher")
-  resultFisherWeight <- runTest(topGOdata, algorithm = "weight", statistic = "fisher")
-  resultFisherElim <- runTest(topGOdata, algorithm = "elim", statistic = "fisher")
+  resultFisherClassic <- topGO::runTest(topGOdata, algorithm = "classic", statistic = "fisher")
+  resultFisherWeight <- topGO::runTest(topGOdata, algorithm = "weight", statistic = "fisher")
+  resultFisherElim <- topGO::runTest(topGOdata, algorithm = "elim", statistic = "fisher")
   
   # collect all test results in one table
-  GenTab <- GenTable(topGOdata, 
+  GenTab <- topGO::GenTable(topGOdata, 
     classicFisher = resultFisherClassic,
     weightedFisher = resultFisherWeight,
     elimFisher = resultFisherElim,
