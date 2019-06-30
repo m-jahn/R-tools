@@ -101,6 +101,8 @@ apply_norm <- function(
 #' them up to protein abundances.
 #' 
 #' @importFrom dplyr %>%
+#' @importFrom dplyr mutate_at
+#' @importFrom tidyr separate_rows
 #' 
 #' @param data the input data frame
 #' @param sample_cols the columns to be used for peptide aggregation
@@ -112,46 +114,85 @@ apply_norm <- function(
 #'   
 #' @return a data frame with aggregated protein intensities, one protein at a  row
 #' 
+#' @examples
+#' 
+#' # generate data frame
+#' df <- data.frame(
+#'   protein = c("A", "B", "C", "C/D", "C/D/E", "E", "F", "G"),
+#'   n_protein = c(1,1,1,2,3,1,1,1),
+#'   weight = rep(1,8),
+#'   peptide = letters[1:8],
+#'   ab1 = sample(1:100, 8),
+#'   ab2 = sample(1:100, 8),
+#'   ab3 = sample(1:100, 8)
+#' )
+#' 
+#' aggregate_pep(
+#'   data = df, 
+#'   sample_cols = c("ab1", "ab2", "ab3"),
+#'   protein_col = "protein",
+#'   n_protein_col = "n_protein",
+#'   split_ambiguous = TRUE,
+#'   split_char = "/",
+#'   method = "sum"
+#' )
+#' 
 #' @export
 # ------------------------------------------------------------------------------
 aggregate_pep <- function(
   data, 
   sample_cols,
   protein_col,
-  weight_col,
+  n_protein_col = NULL,
+  split_ambiguous = FALSE,
+  split_char = NULL,
+  weight_col = NULL,
   weight_threshold = 0.5, 
   method = "sum"
 ) {
   
+  # optional preprocessing: should abundance of ambiguous peptides
+  # be shared among two or more proteins? The default is to remove ambiguous
+  # peptides (openMS ProteinQuantifier). But a simple way to include them
+  # is to evenly disitribute ambiguous petide abundance between proteins.
+  # More elaborate algorithms exist in the literature, but this problem usually 
+  # plays a minor roll in microbes (fewer homologs, no splicing variants)
+  if (split_ambiguous) {
+    
+    if (is.character(split_char) & is.character(n_protein_col)) {
+      data <- data %>% 
+        separate_rows(!!protein_col, sep = split_char) %>%
+        mutate_at(sample_cols, function(x) x / .[[n_protein_col]])
+    } else {
+      stop("arguments 'split_char' and 'n_protein_col' must be character")
+    }
+    
+  }
+  
+
+  # methods for peptide aggregation to proteins
   methods = list(
-    sum = function(x, weight) sum(x, na.rm = TRUE),
+    sum = function(x, weight = NULL) sum(x, na.rm = TRUE),
     weightedsum = function(x, weight) sum(x*weight, na.rm = TRUE),
-    mean = function(x, weight) mean(x, na.rm = TRUE),
+    mean = function(x, weight = NULL) mean(x, na.rm = TRUE),
     weightedmean = function(x, weight) weighted.mean(x, weight, na.rm = TRUE),
     wgeomean = function(x, weight) exp(weighted.mean(log(x), weight, na.rm = TRUE))
   )
   
-  ldply(
-    by(data, data[[protein_col]], function(subdf) {
-      
-      # filter peptides by weight threshold, but keep all peptides if no 
-      # peptide exceeds weight threshold
-      
-      # case 1: all peptides exceed threshold, data taken as is
-      if (all(subdf[[weight_col]] >= weight_threshold)) {
-        #cat("") # optional terminal output
-      }
-      
-      # case 2: some peptides are lower than threshold
-      else if (any(subdf[[weight_col]] >= weight_threshold) & 
-        !all(subdf[[weight_col]] >= weight_threshold)) {
-        cat("filtering by weight: ", sum(subdf[[weight_col]] >= weight_threshold),
-          " out of ", nrow(subdf), "accepted \n")
-        subdf <- subset(subdf, get(weight_col) >= weight_threshold)
-      }
-      else cat("protein ", unique(subdf[[protein_col]]), " has no valid peptide \n")
-      # apply aggregation method per protein, optional weight argument
-      apply(subdf[sample_cols], 2, methods[[method]], weight = subdf[[weight_col]])
-    })
+  
+  # rearrange data frame to long format, in order to summarise
+  data %>% gather(key = sample, value = intensity, sample_cols) %>%
+    
+    # group by protein ID and sample
+    group_by_at(c("sample", protein_col)) %>%
+    
+    # filter peptides by weight threshold, but keep all peptides if no 
+    # peptide exceeds weight threshold
+    #filter_at(., weight_col, all_vars(. >= weight_threshold)) %>%
+    
+    # summarise by applying method of choice
+    summarise(intensity = map2(intensity, weight, methods[[method]])) 
+  
+  
   )
 }
