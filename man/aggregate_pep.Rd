@@ -4,21 +4,31 @@
 \alias{aggregate_pep}
 \title{Aggregate peptide abundances to protein abundances}
 \usage{
-aggregate_pep(data, sample_cols, protein_col, weight_col,
-  weight_threshold = 0.5, method = "sum")
+aggregate_pep(data, sample_cols, protein_col, peptide_col,
+  n_protein_col = NULL, split_ambiguous = FALSE, split_char = NULL,
+  weight_col = NULL, weight_threshold = 0.5, method = "sum")
 }
 \arguments{
 \item{data}{the input data frame}
 
-\item{sample_cols}{the columns to be used for peptide aggregation}
+\item{sample_cols}{(character) columns to be used for peptide aggregation}
 
-\item{protein_col}{the column containing unique protein IDs/names}
+\item{protein_col}{(character) column containing unique protein IDs/names}
 
-\item{weight_col}{the column containing weights or covariance scores}
+\item{peptide_col}{(character) column containing unique peptide IDs/sequences}
 
-\item{weight_threshold}{Covariance score (weight) cutoff, Diffacto's default is 0.5}
+\item{n_protein_col}{(character) column containing number of proteins annotated for this peptide.
+THis column indicates ambiguous peptides whose abundance are shared between n proteins.}
 
-\item{method}{aggregation method, one of ('sum', 'weightedsum', 'mean', 'weightedmean', 'wgeomean'). 
+\item{split_ambiguous}{(logical) if those protein groups should be split into individual proteins or not}
+
+\item{split_char}{(character) character by which to split protein groups}
+
+\item{weight_col}{(character) the column containing weights or covariance scores}
+
+\item{weight_threshold}{(numeric) covariance score (weight) cutoff, Diffacto's default is 0.5}
+
+\item{method}{(character) aggregation method, one of ('sum', 'weightedsum', 'mean', 'weightedmean', 'wgeomean'). 
 The default is 'sum'}
 }
 \value{
@@ -30,4 +40,29 @@ methods to aggregate peptide intensities to their parent proteins. It is mainly
 intended for the use with (raw) Diffacto results, a table of peptide intensities
 and covariation scores (weights) that can be used to filter peptides before aggregating
 them up to protein abundances.
+}
+\examples{
+
+# generate data frame
+df <- data.frame(
+  protein = c("A", "B", "C", "C/D", "C/D/E", "E", "F", "G"),
+  n_protein = c(1,1,1,2,3,1,1,1),
+  weight = rep(1,8),
+  peptide = letters[1:8],
+  ab1 = sample(1:100, 8),
+  ab2 = sample(1:100, 8),
+  ab3 = sample(1:100, 8)
+)
+
+aggregate_pep(
+  data = df, 
+  sample_cols = c("ab1", "ab2", "ab3"),
+  protein_col = "protein",
+  peptide_col = "peptide",
+  n_protein_col = "n_protein",
+  split_ambiguous = TRUE,
+  split_char = "/",
+  method = "sum"
+)
+
 }

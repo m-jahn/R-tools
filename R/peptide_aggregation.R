@@ -3,7 +3,6 @@
 #' This function is a wrapper applying different normalization functions from
 #' other packages, such as limma, justvsm and preprocesscore, see details.
 #' 
-#' @importFrom plyr ldply
 #' @importFrom dplyr %>%
 #' @importFrom dplyr bind_cols
 #' @importFrom dplyr select
@@ -101,15 +100,26 @@ apply_norm <- function(
 #' them up to protein abundances.
 #' 
 #' @importFrom dplyr %>%
+#' @importFrom dplyr summarise
 #' @importFrom dplyr mutate_at
+#' @importFrom dplyr filter_at
+#' @importFrom dplyr group_by_at
+#' @importFrom dplyr all_vars
 #' @importFrom tidyr separate_rows
+#' @importFrom tidyr gather
+#' @importFrom tidyr spread
 #' 
 #' @param data the input data frame
-#' @param sample_cols the columns to be used for peptide aggregation
-#' @param protein_col the column containing unique protein IDs/names
-#' @param weight_col the column containing weights or covariance scores
-#' @param weight_threshold Covariance score (weight) cutoff, Diffacto's default is 0.5
-#' @param method aggregation method, one of ('sum', 'weightedsum', 'mean', 'weightedmean', 'wgeomean'). 
+#' @param sample_cols (character) columns to be used for peptide aggregation
+#' @param protein_col (character) column containing unique protein IDs/names
+#' @param peptide_col (character) column containing unique peptide IDs/sequences
+#' @param n_protein_col (character) column containing number of proteins annotated for this peptide.
+#'   THis column indicates ambiguous peptides whose abundance are shared between n proteins.
+#' @param split_ambiguous (logical) if those protein groups should be split into individual proteins or not
+#' @param split_char (character) character by which to split protein groups
+#' @param weight_col (character) the column containing weights or covariance scores
+#' @param weight_threshold (numeric) covariance score (weight) cutoff, Diffacto's default is 0.5
+#' @param method (character) aggregation method, one of ('sum', 'weightedsum', 'mean', 'weightedmean', 'wgeomean'). 
 #'   The default is 'sum'
 #'   
 #' @return a data frame with aggregated protein intensities, one protein at a  row
@@ -131,6 +141,7 @@ apply_norm <- function(
 #'   data = df, 
 #'   sample_cols = c("ab1", "ab2", "ab3"),
 #'   protein_col = "protein",
+#'   peptide_col = "peptide",
 #'   n_protein_col = "n_protein",
 #'   split_ambiguous = TRUE,
 #'   split_char = "/",
@@ -143,6 +154,7 @@ aggregate_pep <- function(
   data, 
   sample_cols,
   protein_col,
+  peptide_col,
   n_protein_col = NULL,
   split_ambiguous = FALSE,
   split_char = NULL,
@@ -150,6 +162,15 @@ aggregate_pep <- function(
   weight_threshold = 0.5, 
   method = "sum"
 ) {
+    
+  # methods for peptide aggregation to proteins
+  methods = list(
+    sum = function(x, weight = NULL) sum(x, na.rm = TRUE),
+    weightedsum = function(x, weight) sum(x*weight, na.rm = TRUE),
+    mean = function(x, weight = NULL) mean(x, na.rm = TRUE),
+    weightedmean = function(x, weight) weighted.mean(x, weight, na.rm = TRUE),
+    wgeomean = function(x, weight) exp(weighted.mean(log(x), weight, na.rm = TRUE))
+  )
   
   # optional preprocessing: should abundance of ambiguous peptides
   # be shared among two or more proteins? The default is to remove ambiguous
@@ -166,19 +187,19 @@ aggregate_pep <- function(
     } else {
       stop("arguments 'split_char' and 'n_protein_col' must be character")
     }
-    
   }
   
-
-  # methods for peptide aggregation to proteins
-  methods = list(
-    sum = function(x, weight = NULL) sum(x, na.rm = TRUE),
-    weightedsum = function(x, weight) sum(x*weight, na.rm = TRUE),
-    mean = function(x, weight = NULL) mean(x, na.rm = TRUE),
-    weightedmean = function(x, weight) weighted.mean(x, weight, na.rm = TRUE),
-    wgeomean = function(x, weight) exp(weighted.mean(log(x), weight, na.rm = TRUE))
-  )
+  # filter peptides by weight threshold
+  # TODO add rule to keep all peptides if no peptide exceeds weight threshold
+  if (!is.null(weight_col)) {
+    data <- filter_at(data, weight_col, all_vars(. >= weight_threshold))
+  }
   
+  # add dummy column with unity weights if not supplied
+  if (is.null(weight_col)) {
+    weight_col = "weight"
+    data <- mutate(data, weight = 1)
+  }
   
   # rearrange data frame to long format, in order to summarise
   data %>% gather(key = sample, value = intensity, sample_cols) %>%
@@ -186,13 +207,16 @@ aggregate_pep <- function(
     # group by protein ID and sample
     group_by_at(c("sample", protein_col)) %>%
     
-    # filter peptides by weight threshold, but keep all peptides if no 
-    # peptide exceeds weight threshold
-    #filter_at(., weight_col, all_vars(. >= weight_threshold)) %>%
-    
     # summarise by applying method of choice
-    summarise(intensity = map2(intensity, weight, methods[[method]])) 
+    summarise(
+      n_peptides = length(unique(get(peptide_col))),
+      intensity = do.call(methods[[method]], list(intensity, get(weight_col)))
+    ) %>%
+    
+    # spread samples on columns again
+    spread(sample, intensity) %>%
+    
+    # change order to peptide abundances as last
+    select_at(c(protein_col, "n_peptides", sample_cols))
   
-  
-  )
 }
