@@ -103,6 +103,7 @@ apply_norm <- function(
 #' @importFrom dplyr summarise
 #' @importFrom dplyr mutate_at
 #' @importFrom dplyr filter_at
+#' @importFrom dplyr select_at
 #' @importFrom dplyr group_by_at
 #' @importFrom dplyr all_vars
 #' @importFrom tidyr separate_rows
