@@ -63,7 +63,7 @@ silhouetteAnalysis <- function(
     xlab = "cluster elements", ylab = "silhouette width",
     panel = function(x, y, ...) {
       panel.grid(h = -1, v = -1, col = grey(0.9))
-      panel.barplot(x, y, ewidth = 0.5, border = NULL, fill = grey(0.7))
+      panel.barplot(x, y, ewidth = 0.5, ...)
       panel.ablineq(h = mean(y), lty = 2, col = grey(0.3), fontfamily = "FreeSans", pos = 3)
     }
   )
