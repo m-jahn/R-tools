@@ -2,29 +2,33 @@
 % Please edit documentation in R/silhouette_analysis.R
 \name{silhouetteAnalysis}
 \alias{silhouetteAnalysis}
-\title{Wrapper function to perform silhouette analysis on all clusters of a hclust object}
+\title{Wrapper function to perform silhouette analysis on different cluster numbers}
 \usage{
-silhouetteAnalysis(mat, cluster_object, n_clusters)
+silhouetteAnalysis(mat, cluster_object = NULL, n_clusters)
 }
 \arguments{
-\item{mat}{(numeric matrix) the original data matrix that clustering was performed on}
+\item{mat}{(numeric matrix) data matrix that clustering was performed on 
+(or will be performed using k-means clustering)}
 
-\item{cluster_object}{(hclust) the cluster object obtained from running hclust()}
+\item{cluster_object}{(hclust) a cluster object obtained from running hclust(), optional}
 
 \item{n_clusters}{(numeric) a vector of cluster numbers for which silhouette analysis is
 performed}
 }
 \value{
-a list with three objects, silhouette analysis data, and two lattice result plots
+a list with three objects, silhouette analysis data, and two summary plots
+  obtained using lattice graphics.
 }
 \description{
 Silhouette analysis shows the clusters that have explanatory power.
-That includes clusters that are best separated from the neighbours (positive score)
+That includes clusters that are best separated from the neighbours 
+resulting in a higher average silhoutte width (the decisive metric to 
+judge optimal cluster number). This function applies the silhouette analysis iteratively for a vector of 
+different cluster numbers and stores results in a list.
 }
 \details{
-this function applies the iterative silhouette analysis
-and stores results in a list
-
 Prerequesite for silhouette analysis is a cluster object that can be obtained
-by e.g. running hclust(d = dist(mat), method = "ward.D").
+  by e.g. running hclust(d = dist(mat), method = "ward.D"). The alternative is to supply
+  no cluster object, then the functions performs a kmeans() clustering for the indicated
+  number of clusters.
 }
