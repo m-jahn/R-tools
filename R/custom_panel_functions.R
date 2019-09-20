@@ -16,22 +16,29 @@
 #'   as the i'th element of unique(x). If character, it must be one of x. If 
 #'   std = 'all_values', each unique group of x is compared to the total population
 #' @param symbol (logical) if '*' symbols are to be drawn for significance
-#' @param cex.symbol (numeric) character size of the symbol
+#' @param cex_symbol (numeric) character size of the symbol
 #' @param offset (numeric) offset added to the the vertical position of the p-value
-#' @param fixed.pos (numeric) vertical position of the p-value, 
+#' @param fixed_pos (numeric) vertical position of the p-value, 
 #'   if NULL determined from the data
 #' @param verbose (logical) if a summary of the p-value calculation should be 
 #'   printed to the terminal
+#' @param pval_digits (numeric) Integer specifying number of digits for p-value
 #' @param col (character) the color to be used
 #' @param ... other arguments passed to the function
 #' 
 #' @export
 # ------------------------------------------------------------------------------
-panel.pvalue <- function(x, y, std = NULL, symbol = TRUE, cex.symbol = 1.5, offset = 1, 
-  fixed.pos = NULL, verbose = FALSE, 
+panel.pvalue <- function(x, y, std = NULL, symbol = TRUE, cex_symbol = 1.5, offset = 1, 
+  fixed_pos = NULL, verbose = FALSE, pval_digits = 4,
   col = trellis.par.get()$superpose.polygon$col[1], ...
   ) 
 { 
+  # if x is a factor, reorder x and y based on factor levels
+  if (is.factor(x)) {
+    ord <- order(as.numeric(x))
+    x <- x[ord]; y <- y[ord]
+  }
+
   # if no standard is passed to function, just take the first unique x
   if (is.null(std)) {
     std = unique(x)[1]
@@ -58,18 +65,18 @@ panel.pvalue <- function(x, y, std = NULL, symbol = TRUE, cex.symbol = 1.5, offs
       if (x <= 0.05 & x > 0.01) "*" else ""
     })
   } else {
-    pval = paste0("p = ", round(pval, 5))
+    pval = paste0("p = ", round(pval, pval_digits))
   }
   
-  if (is.null(fixed.pos)) {
+  if (is.null(fixed_pos)) {
     ypos = tapply(y, x, function(x) median(x, na.rm = TRUE))
-  } else if (is.numeric(fixed.pos)){
-    ypos = fixed.pos
+  } else if (is.numeric(fixed_pos)){
+    ypos = fixed_pos
   } else {
-    stop("fixed.pos must be NULL for automatic y positioning, or a numeric value.")
+    stop("fixed_pos must be NULL for automatic y positioning, or a numeric value.")
   }
   panel.text(1:length(pval), ypos, labels = pval, 
-    cex = cex.symbol, pos = 3, offset = offset, col = col, ...)
+    cex = cex_symbol, pos = 3, offset = offset, col = col, ...)
 }
 
 

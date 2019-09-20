@@ -14,9 +14,13 @@ This script is a small utility to parse Kegg Brite XML files and return
 a regular data frame instead.
 }
 \details{
-Changes that need to be made to the Kegg XML file before applying function (!):
-- replace double spaces \code{'  '} by commas \code{','} or tabs \code{'\t'}
+Changes that need to be made to the Kegg XML file before applying the function, simply using a text editor:
+
+- replace double spaces \code{'  '} by tabs \code{'\t'}
 - remove first lines until regular content begins
-- possibly add some trailing tabs or commas to end of first line
+- possibly add some trailing tabs or commas to end of first line (4 to 5)
   so that read.table knows how many columns to expect
+- read raw data frame into R using
+  \code{read.table("/path/to/file", fill = TRUE, sep = "\t", row.names = NULL, 
+    stringsAsFactors = FALSE, quote = "")}
 }

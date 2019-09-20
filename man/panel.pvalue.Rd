@@ -4,8 +4,8 @@
 \alias{panel.pvalue}
 \title{Calculate and draw p-values in lattice plots}
 \usage{
-panel.pvalue(x, y, std = NULL, symbol = TRUE, cex.symbol = 1.5,
-  offset = 1, fixed.pos = NULL, verbose = FALSE,
+panel.pvalue(x, y, std = NULL, symbol = TRUE, cex_symbol = 1.5,
+  offset = 1, fixed_pos = NULL, verbose = FALSE, pval_digits = 4,
   col = trellis.par.get()$superpose.polygon$col[1], ...)
 }
 \arguments{
@@ -20,15 +20,17 @@ std = 'all_values', each unique group of x is compared to the total population}
 
 \item{symbol}{(logical) if '*' symbols are to be drawn for significance}
 
-\item{cex.symbol}{(numeric) character size of the symbol}
+\item{cex_symbol}{(numeric) character size of the symbol}
 
 \item{offset}{(numeric) offset added to the the vertical position of the p-value}
 
-\item{fixed.pos}{(numeric) vertical position of the p-value, 
+\item{fixed_pos}{(numeric) vertical position of the p-value, 
 if NULL determined from the data}
 
 \item{verbose}{(logical) if a summary of the p-value calculation should be 
 printed to the terminal}
+
+\item{pval_digits}{(numeric) Integer specifying number of digits for p-value}
 
 \item{col}{(character) the color to be used}
 
