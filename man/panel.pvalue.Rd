@@ -6,6 +6,7 @@
 \usage{
 panel.pvalue(x, y, std = NULL, symbol = TRUE, cex_symbol = 1.5,
   offset = 1, fixed_pos = NULL, verbose = FALSE, pval_digits = 4,
+  alternative = "two.sided",
   col = trellis.par.get()$superpose.polygon$col[1], ...)
 }
 \arguments{
@@ -31,6 +32,8 @@ if NULL determined from the data}
 printed to the terminal}
 
 \item{pval_digits}{(numeric) Integer specifying number of digits for p-value}
+
+\item{alternative}{(character) Passed to t.test(), one of "two.sided", "less", or "greater"}
 
 \item{col}{(character) the color to be used}
 

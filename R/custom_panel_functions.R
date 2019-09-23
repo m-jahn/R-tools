@@ -23,13 +23,14 @@
 #' @param verbose (logical) if a summary of the p-value calculation should be 
 #'   printed to the terminal
 #' @param pval_digits (numeric) Integer specifying number of digits for p-value
+#' @param alternative (character) Passed to t.test(), one of "two.sided", "less", or "greater"
 #' @param col (character) the color to be used
 #' @param ... other arguments passed to the function
 #' 
 #' @export
 # ------------------------------------------------------------------------------
 panel.pvalue <- function(x, y, std = NULL, symbol = TRUE, cex_symbol = 1.5, offset = 1, 
-  fixed_pos = NULL, verbose = FALSE, pval_digits = 4,
+  fixed_pos = NULL, verbose = FALSE, pval_digits = 4, alternative = "two.sided",
   col = trellis.par.get()$superpose.polygon$col[1], ...
   ) 
 { 
@@ -51,7 +52,9 @@ panel.pvalue <- function(x, y, std = NULL, symbol = TRUE, cex_symbol = 1.5, offs
   }
   
   # calculate p-value between all x-variable groups and standard
-  pval <- tapply(y, x, function(z) t.test(z, y[x == std])$p.value)
+  pval <- tapply(y, x, function(z) {
+    t.test(z, y[x == std], alternative = alternative)$p.value
+  })
   if (verbose) {
     cat("p-value for comparison of ", std, " with ", 
       as.character(unique(x)), " = ", pval, "\n")
