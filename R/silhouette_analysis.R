@@ -10,6 +10,8 @@
 #' @importFrom dendextend is.hclust
 #' @importFrom plyr ldply
 #' @importFrom lattice xyplot
+#' @importFrom stats cor
+#' @importFrom stats kmeans
 #' 
 #' @param mat (numeric matrix) data matrix that clustering was performed on 
 #'   (or will be performed using k-means clustering)

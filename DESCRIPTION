@@ -8,12 +8,12 @@ Authors@R:
            email = "michael.jahn@scilifelab.se",
            comment = c(ORCID = "0000-0002-3913-153X"))
 Description: This package contains utility and wrapper functions that I often use. It is not intended to be usable by the general public but is maintained as a package for accessability.
-License: GPL-3
+License: GPL-3 + file LICENSE
 Imports: 
     colorspace, grid, lattice, latticeExtra, nlstools, 
     cluster, dendextend, dplyr, gtools, plyr, tidyr, 
     grDevices, methods, stats
-Suggests: limma, preprocessCore, vsn, gtools, topGO, knitr, rmarkdown
+Suggests: limma, preprocessCore, vsn, topGO, knitr, rmarkdown
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1

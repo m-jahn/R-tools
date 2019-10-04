@@ -5,13 +5,7 @@
 #' input a data frame with three specific columns, cluster numbers, Gene IDs, 
 #' and GO terms. Alternatively, these can also be supplied as three individual 
 #' lists.
-#' 
-#' @importFrom topGO GenTable
-#' @importFrom topGO runTest
-#' @importFrom topGO genesInTerm
-#' @importFrom topGO scoresInTerm
-#' @importFrom topGO annFUN.gene2GO
-#' 
+#'  
 #' @param df an (optional) data.frame with the three columns specified below
 #' @param GeneID (character) The column containing gene IDs, alternatively a vector
 #' @param Gene.ontology.IDs (character) The column containing a list of GO terms for each gene, 
@@ -99,7 +93,7 @@ GetTopGO <- function(df = NULL, GeneID = NULL, Gene.ontology.IDs = NULL,
   # add gene names that are contained in the respective cluster/GO term
   GenTab$SigGenes <- sapply(GenTab$GO.ID, function(term){
     paste(collapse = ",",
-      genesInTerm(topGOdata, term)[[1]][scoresInTerm(topGOdata, term)[[1]] == selected.cluster]
+      topGO::genesInTerm(topGOdata, term)[[1]][topGO::scoresInTerm(topGOdata, term)[[1]] == selected.cluster]
     )
   })
   GenTab
