@@ -4,12 +4,34 @@
 \alias{custom_splom}
 \title{Custom scatterplot matrix (SPLOM)}
 \usage{
-custom_splom(df, ..., pch = 19, col = grey(0.5), cex = 0.8)
+custom_splom(df, ..., aspect = 1, between = list(x = 0.5, y = 0.5),
+  col_palette = c("steelblue", grey(0.95), "darkorange"), scales = 4,
+  strip = NULL, groups = NULL, main = NULL, xlab = NULL,
+  ylab = NULL, pch = 19, col = grey(0.5), cex = 0.8)
 }
 \arguments{
 \item{df}{(data.frame) data frame whose columns are plotted against each other}
 
 \item{...}{other arguments passed to the function}
+
+\item{aspect}{(numeric) aspect ratio between height and width, default = 1.}
+
+\item{between}{(list) list with two named vectors x and y indicating space between panels}
+
+\item{col_palette}{(list) list of colors to use for colorRampPalette}
+
+\item{scales}{(numeric or list) only numeric seems to work, than it controls the 
+number of ticks and tick labels to draw at axes}
+
+\item{strip}{(list) controlling strip appearance, defaults to NULL.}
+
+\item{groups}{(character) a grouping variable (untested feature)}
+
+\item{main}{(character) title of the plot}
+
+\item{xlab}{(character) label of X axis}
+
+\item{ylab}{(character) label of y axis}
 
 \item{pch}{(numeric) the plotting symbol to be used}
 
