@@ -1,88 +1,100 @@
 Rtools
 ================
 Michael Jahn,
-2019-06-27
+2019-10-10
 
-------------------------------------------------------------------------
+-----
 
 Utility and wrapper functions for bioinformatics work
 
-Description
------------
+## Description
 
-This package contains utility and wrapper functions that I often use. It is not intended to be usable by the general public but is maintained as a package for accessability.
+This package contains utility and wrapper functions that I often use. It
+is not intended to be usable by the general public but is maintained as
+a package for accessability. Feel free to copy, fork or source functions
+you find useful.
 
-Installation
-------------
+## Installation
 
-To install the package directly from github, use this function from devtools package in your R session:
+To install the package directly from github, use this function from
+`devtools` package in your R session:
 
-    require(devtools)
-    devtools::install_github("https://github.com/m-jahn/R-tools")
+``` r
+require(devtools)
+devtools::install_github("https://github.com/m-jahn/R-tools")
+```
 
-Utility functions
------------------
+## Utility functions
 
-### aggregate\_pep
+#### aggregate\_pep
 
 Aggregate peptide abundances to protein abundances
 
-### apply\_norm
+#### apply\_norm
 
 Apply normalization based on different published methods
 
-### baranyi\_fun
+#### baranyi\_fun
 
 Baranyi growth model
 
-### custom.ggplot
+#### custom.ggplot
 
 Custom ggplot2 like theme
 
-### custom.lattice
+#### custom.lattice
 
 Custom grey lattice theme
 
-### GetTopGO
+#### custom\_splom
+
+Custom scatterplot matrix (SPLOM)
+
+#### GetTopGO
 
 Convenience wrapper to TopGO package (Rahnenfueher et al.)
 
-### gompertzm\_fun
+#### gompertzm\_fun
 
 Modified Gompertz growth model
 
-### mutate\_cond
+#### mutate\_cond
 
 Conditional mutate(), mutating only selected observations (rows)
 
-### OD\_corr
+#### OD\_corr
 
-Optical density conversion of plate reader to photometer measurements (OD 600 nm)
+Optical density conversion of plate reader to photometer measurements
+(OD 600 nm)
 
-### panel.barplot
+#### panel.barplot
 
 Draw barplot with error bars in lattice plots
 
-### panel.errbars
+#### panel.beeswarm
+
+Panel function for beeswarm plots
+
+#### panel.errbars
 
 Calculate and draw error bars in lattice plots
 
-### panel.key
+#### panel.key
 
 Draw custom keys in lattice plots
 
-### panel.pvalue
+#### panel.pvalue
 
 Calculate and draw p-values in lattice plots
 
-### panel.quadrants
+#### panel.quadrants
 
 Draw quadrants and quadrant statistics in lattice plots
 
-### parse\_kegg\_brite
+#### parse\_kegg\_brite
 
 Parse Kegg Brite xml files step-by-step
 
-### silhouetteAnalysis
+#### silhouetteAnalysis
 
 Wrapper function to perform silhouette analysis on all clusters of a

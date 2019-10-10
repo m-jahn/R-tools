@@ -1,16 +1,13 @@
 ---
-output: github_document
+#output: github_document
 title: "Rtools"
 author: "Michael Jahn, "
 date: "`r Sys.Date()`"
-#output: rmarkdown::html_vignette
-#vignette: >
-#  %\VignetteIndexEntry{}
-#  %\VignetteEngine{knitr::rmarkdown}
-#  %\VignetteEncoding{UTF-8}
-#
-# alternative to create README.md from R markdown source:
-# knitr::knit("README.Rmd", "README.md")
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rtools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ***
@@ -19,80 +16,88 @@ Utility and wrapper functions for bioinformatics work
 
 ## Description
 
-This package contains utility and wrapper functions that I often use. It is not intended to be usable by the general public but is maintained as a package for accessability.
+This package contains utility and wrapper functions that I often use. It is not intended to be usable by the general public but is maintained as a package for accessability. Feel free to copy, fork or source functions 
+you find useful.
 
 ## Installation
 
-To install the package directly from github, use this function from devtools package in your R session:
+To install the package directly from github, use this function from `devtools` package in your R session:
 
-```
+```{r, eval = FALSE}
 require(devtools)
 devtools::install_github("https://github.com/m-jahn/R-tools")
 ```
 
 ## Utility functions
 
-
-### aggregate_pep
+#### aggregate_pep
 
 Aggregate peptide abundances to protein abundances
 
-### apply_norm
+#### apply_norm
 
 Apply normalization based on different published methods
 
-### baranyi_fun
+#### baranyi_fun
 
 Baranyi growth model
 
-### custom.ggplot
+#### custom.ggplot
 
 Custom ggplot2 like theme
 
-### custom.lattice
+#### custom.lattice
 
 Custom grey lattice theme
 
-### GetTopGO
+#### custom_splom	
+
+Custom scatterplot matrix (SPLOM)
+
+#### GetTopGO
 
 Convenience wrapper to TopGO package (Rahnenfueher et al.)
 
-### gompertzm_fun
+#### gompertzm_fun
 
 Modified Gompertz growth model
 
-### mutate_cond
+#### mutate_cond
 
 Conditional mutate(), mutating only selected observations (rows)
 
-### OD_corr
+#### OD_corr
 
 Optical density conversion of plate reader to photometer measurements (OD 600 nm)
 
-### panel.barplot
+#### panel.barplot
 
 Draw barplot with error bars in lattice plots
 
-### panel.errbars
+#### panel.beeswarm	
+
+Panel function for beeswarm plots
+
+#### panel.errbars
 
 Calculate and draw error bars in lattice plots
 
-### panel.key
+#### panel.key
 
 Draw custom keys in lattice plots
 
-### panel.pvalue
+#### panel.pvalue
 
 Calculate and draw p-values in lattice plots
 
-### panel.quadrants
+#### panel.quadrants
 
 Draw quadrants and quadrant statistics in lattice plots
 
-### parse_kegg_brite
+#### parse_kegg_brite
 
 Parse Kegg Brite xml files step-by-step
 
-### silhouetteAnalysis
+#### silhouetteAnalysis
 
 Wrapper function to perform silhouette analysis on all clusters of a
