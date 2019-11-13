@@ -11,8 +11,8 @@ Description: This package contains utility and wrapper functions that I often us
 License: GPL-3 + file LICENSE
 Imports: 
     colorspace, grid, lattice, latticeExtra, nlstools, 
-    cluster, dendextend, dplyr, gtools, plyr, tidyr, 
-    grDevices, methods, stats
+    cluster, dendextend, dplyr, gtools, directlabels,
+    plyr, tidyr, grDevices, methods, stats
 Suggests: limma, preprocessCore, vsn, topGO, knitr, rmarkdown
 Encoding: UTF-8
 LazyData: true
