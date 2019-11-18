@@ -5,9 +5,10 @@
 \title{Point labels for scatterplots}
 \usage{
 panel.directlabel(x, y, groups = NULL, subscripts = NULL,
-  labels = NULL, col = NULL, method = directlabels::smart.grid,
-  draw_text = TRUE, draw_line = TRUE, draw_box = FALSE,
-  box_fill = grey(0.95), box_line = NA, ...)
+  labels = NULL, col = NULL, x_boundary = NULL, y_boundary = NULL,
+  method = directlabels::smart.grid, draw_text = TRUE,
+  draw_line = TRUE, draw_box = FALSE, box_fill = grey(0.95),
+  box_line = NA, ...)
 }
 \arguments{
 \item{x, y}{(numeric) vectors representing x and y coordinates of points}
@@ -20,6 +21,12 @@ panel.directlabel(x, y, groups = NULL, subscripts = NULL,
 This resembles the behavior of the original \code{directlabels} functions}
 
 \item{col}{(charcater) color (vector) to be used for labels and lines}
+
+\item{x_boundary}{(numeric) vector of length two, indicating the boundaries of
+x for which labels should be drawn (default: NULL)}
+
+\item{y_boundary}{(numeric) vector of length two, indicating the boundaries of
+y for which labels should be drawn (default: NULL)}
 
 \item{method}{(list) the positioning method, default is \code{directlabels::smart.grid}}
 

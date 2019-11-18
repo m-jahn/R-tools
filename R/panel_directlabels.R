@@ -16,6 +16,10 @@
 #' @param subscripts subscripts passed down from xyplot (does not need to be specified)
 #' @param labels (character) vector of labels to be plotted, if NULL, groups are used
 #'   This resembles the behavior of the original \code{directlabels} functions
+#' @param x_boundary (numeric) vector of length two, indicating the boundaries of
+#'   x for which labels should be drawn (default: NULL) 
+#' @param y_boundary (numeric) vector of length two, indicating the boundaries of
+#'   y for which labels should be drawn (default: NULL)
 #' @param col (charcater) color (vector) to be used for labels and lines
 #' @param method (list) the positioning method, default is \code{directlabels::smart.grid}
 #' @param draw_text (logical) whether to draw text labels or not (default: TRUE)
@@ -57,12 +61,40 @@
 # ------------------------------------------------------------------------------
 panel.directlabel <- function(
   x, y, groups = NULL, subscripts = NULL,
-  labels = NULL, col = NULL,
+  labels = NULL, col = NULL, 
+  x_boundary = NULL, y_boundary = NULL, 
   method = directlabels::smart.grid,
   draw_text = TRUE, draw_line = TRUE,
   draw_box = FALSE, box_fill = grey(0.95),
   box_line = NA, ...
 ) {
+  
+  # Filtering 
+  # ----------
+  # remove NAs if necessary
+  valid <- !is.na(x) & !is.na(y)
+  
+  # remove values by user selection
+  if (!is.null(x_boundary)) {
+    if (length(x_boundary) == 2) {
+      valid <- valid & x >= x_boundary[1] & x <= x_boundary[2]
+    } else {
+      stop("x_boundary or y_boundary must be length 2.")
+    }
+  }
+  if (!is.null(y_boundary)) {
+    if (length(y_boundary) == 2) {
+      valid <- valid & y >= y_boundary[1] & y <= y_boundary[2]
+    } else {
+      stop("x_boundary or y_boundary must be length 2.")
+    }
+  }
+  
+  # apply filtering
+  x <- x[valid]; y <- y[valid]
+  if (!is.null(groups)) groups <- groups[valid]
+  if (!is.null(subscripts)) subscripts <- subscripts[valid]
+  
   
   # groups should be factor, otherwise coerce to it
   if (is.null(col)) {
