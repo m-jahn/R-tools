@@ -4,10 +4,10 @@
 \alias{panel.directlabel}
 \title{Point labels for scatterplots}
 \usage{
-panel.directlabel(x, y, groups, subscripts, labels = NULL,
-  method = directlabels::smart.grid, draw_text = TRUE,
-  draw_line = TRUE, draw_box = FALSE, box_fill = grey(0.95),
-  box_line = NA, ...)
+panel.directlabel(x, y, groups = NULL, subscripts = NULL,
+  labels = NULL, col = NULL, method = directlabels::smart.grid,
+  draw_text = TRUE, draw_line = TRUE, draw_box = FALSE,
+  box_fill = grey(0.95), box_line = NA, ...)
 }
 \arguments{
 \item{x, y}{(numeric) vectors representing x and y coordinates of points}
@@ -16,8 +16,10 @@ panel.directlabel(x, y, groups, subscripts, labels = NULL,
 
 \item{subscripts}{subscripts passed down from xyplot (does not need to be specified)}
 
-\item{labels}{(character) vector of labels to be plotted, if NULL, groups are used.
-This resembles the behavior of the original \code{directlabels} functions.}
+\item{labels}{(character) vector of labels to be plotted, if NULL, groups are used
+This resembles the behavior of the original \code{directlabels} functions}
+
+\item{col}{(charcater) color (vector) to be used for labels and lines}
 
 \item{method}{(list) the positioning method, default is \code{directlabels::smart.grid}}
 
@@ -37,19 +39,30 @@ This resembles the behavior of the original \code{directlabels} functions.}
 Draw text labels for all points of a scatterplot using directlabels package
 }
 \examples{
-
+library(grid)
 library(lattice)
 
+data("mtcars")
 mtcars$car <- rownames(mtcars)
-mtcars$cyl <- factor(mtcars$cyl)
 
-
-xyplot(mpg ~ wt | cyl, mtcars, 
-  pch = 19, groups = cyl, labels = mtcars$car,
+# A standard example using lattice grouping and paneling
+xyplot(mpg ~ wt | factor(cyl), mtcars,
+  groups = cyl, pch = 19, labels = mtcars$car,
   as.table = TRUE, layout = c(3, 1),
   panel = function(x, y, ...) {
     panel.xyplot(x, y, ...)
     panel.directlabel(x, y, draw_box = TRUE, ...)
+  }
+)
+
+# A similar plot but without grouping. This requires explicit
+# use of subscripts
+xyplot(mpg ~ wt | factor(cyl), mtcars,
+  pch = 19, labels = mtcars$car,
+  as.table = TRUE, layout = c(3, 1),
+  panel = function(x, y, subscripts, ...) {
+    panel.xyplot(x, y, ...)
+    panel.directlabel(x, y, draw_box = TRUE, subscripts = subscripts, ...)
   }
 )
 

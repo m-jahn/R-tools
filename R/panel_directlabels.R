@@ -14,8 +14,9 @@
 #' @param x,y (numeric) vectors representing x and y coordinates of points
 #' @param groups grouping variable passed down from xyplot (does not need to be specified)
 #' @param subscripts subscripts passed down from xyplot (does not need to be specified)
-#' @param labels (character) vector of labels to be plotted, if NULL, groups are used.
-#'   This resembles the behavior of the original \code{directlabels} functions.
+#' @param labels (character) vector of labels to be plotted, if NULL, groups are used
+#'   This resembles the behavior of the original \code{directlabels} functions
+#' @param col (charcater) color (vector) to be used for labels and lines
 #' @param method (list) the positioning method, default is \code{directlabels::smart.grid}
 #' @param draw_text (logical) whether to draw text labels or not (default: TRUE)
 #' @param draw_line (logical) whether to draw a line to labels or not (default: TRUE)
@@ -25,15 +26,15 @@
 #' @param ... other arguments passed to the function
 #' 
 #' @examples
-#' 
+#' library(grid)
 #' library(lattice)
 #' 
+#' data("mtcars")
 #' mtcars$car <- rownames(mtcars)
-#' mtcars$cyl <- factor(mtcars$cyl)
 #' 
-#' 
-#' xyplot(mpg ~ wt | cyl, mtcars, 
-#'   pch = 19, groups = cyl, labels = mtcars$car,
+#' # A standard example using lattice grouping and paneling
+#' xyplot(mpg ~ wt | factor(cyl), mtcars,
+#'   groups = cyl, pch = 19, labels = mtcars$car,
 #'   as.table = TRUE, layout = c(3, 1),
 #'   panel = function(x, y, ...) {
 #'     panel.xyplot(x, y, ...)
@@ -41,25 +42,57 @@
 #'   }
 #' )
 #' 
+#' # A similar plot but without grouping. This requires explicit
+#' # use of subscripts
+#' xyplot(mpg ~ wt | factor(cyl), mtcars,
+#'   pch = 19, labels = mtcars$car,
+#'   as.table = TRUE, layout = c(3, 1),
+#'   panel = function(x, y, subscripts, ...) {
+#'     panel.xyplot(x, y, ...)
+#'     panel.directlabel(x, y, draw_box = TRUE, subscripts = subscripts, ...)
+#'   }
+#' )
+#' 
 #' @export
 # ------------------------------------------------------------------------------
 panel.directlabel <- function(
-  x, y, groups, subscripts, labels = NULL,
-  method = directlabels::smart.grid, 
+  x, y, groups = NULL, subscripts = NULL,
+  labels = NULL, col = NULL,
+  method = directlabels::smart.grid,
   draw_text = TRUE, draw_line = TRUE,
   draw_box = FALSE, box_fill = grey(0.95),
   box_line = NA, ...
 ) {
-  # if labels are not explicitly supplied, use group labels.
-  # subscripts should take care that correct labels per panel are selected
-  if (is.null(labels)) {
-    labels = groups[subscripts]
-  } else {
-    labels = labels[subscripts]
+  
+  # groups should be factor, otherwise coerce to it
+  if (is.null(col)) {
+    if (!is.null(groups)) {
+      groups <- as.factor(groups)
+      
+      # determine graphical parameters from groups
+      cols <- lattice::trellis.par.get()$superpose.symbol$col
+      cols <- rep(cols, length.out = length(levels(groups)))
+      col <- cols[as.numeric(groups)[subscripts]]  
+      
+    # default color if no groups is supplied
+    } else {
+      col <- lattice::trellis.par.get()$plot.symbol$col
+    }
   }
   
-  # determine colors
-  col = lattice::trellis.par.get()$superpose.symbol$col[groups[subscripts]]
+  # if labels are not explicitly supplied, use group labels.
+  # subscripts take care that correct labels per panel are selected
+  if (is.null(labels)) {
+    if (!is.null(groups)) {
+      labels <- groups[subscripts]
+    } else {
+      stop("Neither labels nor groups supplied, no labels to draw.")
+    }
+  } else if (!is.null(subscripts)) {
+    labels <- labels[subscripts]
+  } else {
+    stop("No subscripts argument supplied. Use 'panel = function(x, y, subscripts, ...)'")
+  }
   
   # convert user coordinate units to cm (see apply.method manual)
   x_cm <- grid::convertX(unit(x, "native"), unitTo = "cm", valueOnly = TRUE)
@@ -67,9 +100,9 @@ panel.directlabel <- function(
   
   # apply label placing algorithm
   coords <- directlabels::apply.method(
-    method, d = data.frame(x = x_cm, y = y_cm, groups = labels))
+    method, d = data.frame(x = x_cm, y = y_cm, groups = labels, index = 1:length(x)))
   # sort not by label number of characters, but by original order
-  coords <- coords[match(labels, as.character(coords$groups)), ]
+  coords <- coords[order(coords$index), ]
   
   # convert back to native units
   coords[c("x", "w", "right", "left")] <-
