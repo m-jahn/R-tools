@@ -5,10 +5,10 @@
 \title{Point labels for scatterplots}
 \usage{
 panel.directlabel(x, y, groups = NULL, subscripts = NULL,
-  labels = NULL, col = NULL, x_boundary = NULL, y_boundary = NULL,
-  method = directlabels::smart.grid, draw_text = TRUE,
-  draw_line = TRUE, draw_box = FALSE, box_fill = grey(0.95),
-  box_line = NA, ...)
+  labels = NULL, col = NULL, cex = 0.8, x_boundary = NULL,
+  y_boundary = NULL, method = directlabels::smart.grid,
+  draw_text = TRUE, draw_line = TRUE, draw_box = FALSE,
+  box_fill = grey(0.95), box_line = NULL, ...)
 }
 \arguments{
 \item{x, y}{(numeric) vectors representing x and y coordinates of points}
@@ -20,7 +20,10 @@ panel.directlabel(x, y, groups = NULL, subscripts = NULL,
 \item{labels}{(character) vector of labels to be plotted, if NULL, groups are used
 This resembles the behavior of the original \code{directlabels} functions}
 
-\item{col}{(charcater) color (vector) to be used for labels and lines}
+\item{col}{(character) color (vector) to be used for labels and lines. 
+The default, NULL, uses colors supplied by the top level function.}
+
+\item{cex}{(numeric) size of text labels and corresponding boxes}
 
 \item{x_boundary}{(numeric) vector of length two, indicating the boundaries of
 x for which labels should be drawn (default: NULL)}
@@ -38,7 +41,9 @@ y for which labels should be drawn (default: NULL)}
 
 \item{box_fill}{(character) color of the box fill (default: light grey)}
 
-\item{box_line}{(character) color of the box border (default: none)}
+\item{box_line}{(character or logical) color of the box border. This
+parameters takes as input a color, a logical such as TRUE (uses colors supplied by 
+top level function), or NULL (the default)}
 
 \item{...}{other arguments passed to the function}
 }
@@ -48,17 +53,19 @@ Draw text labels for all points of a scatterplot using directlabels package
 \examples{
 library(grid)
 library(lattice)
+library(directlabels)
 
 data("mtcars")
 mtcars$car <- rownames(mtcars)
 
-# A standard example using lattice grouping and paneling
+# A standard example using lattice grouping and paneling;
+# We can also change draw boxes around labels and change label size
 xyplot(mpg ~ wt | factor(cyl), mtcars,
   groups = cyl, pch = 19, labels = mtcars$car,
-  as.table = TRUE, layout = c(3, 1),
+  as.table = TRUE, layout = c(3, 1), cex = 0.6,
   panel = function(x, y, ...) {
     panel.xyplot(x, y, ...)
-    panel.directlabel(x, y, draw_box = TRUE, ...)
+    panel.directlabel(x, y, draw_box = TRUE, box_line = TRUE, ...)
   }
 )
 

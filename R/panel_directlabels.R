@@ -20,29 +20,35 @@
 #'   x for which labels should be drawn (default: NULL) 
 #' @param y_boundary (numeric) vector of length two, indicating the boundaries of
 #'   y for which labels should be drawn (default: NULL)
-#' @param col (charcater) color (vector) to be used for labels and lines
+#' @param col (character) color (vector) to be used for labels and lines. 
+#'   The default, NULL, uses colors supplied by the top level function.
+#' @param cex (numeric) size of text labels and corresponding boxes
 #' @param method (list) the positioning method, default is \code{directlabels::smart.grid}
 #' @param draw_text (logical) whether to draw text labels or not (default: TRUE)
 #' @param draw_line (logical) whether to draw a line to labels or not (default: TRUE)
 #' @param draw_box (logical) whether to draw a box around labels or not (default: FALSE) 
 #' @param box_fill (character) color of the box fill (default: light grey)
-#' @param box_line (character) color of the box border (default: none)
+#' @param box_line (character or logical) color of the box border. This
+#'   parameters takes as input a color, a logical such as TRUE (uses colors supplied by 
+#'   top level function), or NULL (the default)
 #' @param ... other arguments passed to the function
 #' 
 #' @examples
 #' library(grid)
 #' library(lattice)
+#' library(directlabels)
 #' 
 #' data("mtcars")
 #' mtcars$car <- rownames(mtcars)
 #' 
-#' # A standard example using lattice grouping and paneling
+#' # A standard example using lattice grouping and paneling;
+#' # We can also change draw boxes around labels and change label size
 #' xyplot(mpg ~ wt | factor(cyl), mtcars,
 #'   groups = cyl, pch = 19, labels = mtcars$car,
-#'   as.table = TRUE, layout = c(3, 1),
+#'   as.table = TRUE, layout = c(3, 1), cex = 0.6,
 #'   panel = function(x, y, ...) {
 #'     panel.xyplot(x, y, ...)
-#'     panel.directlabel(x, y, draw_box = TRUE, ...)
+#'     panel.directlabel(x, y, draw_box = TRUE, box_line = TRUE, ...)
 #'   }
 #' )
 #' 
@@ -61,15 +67,15 @@
 # ------------------------------------------------------------------------------
 panel.directlabel <- function(
   x, y, groups = NULL, subscripts = NULL,
-  labels = NULL, col = NULL, 
+  labels = NULL, col = NULL, cex = 0.8,
   x_boundary = NULL, y_boundary = NULL, 
   method = directlabels::smart.grid,
   draw_text = TRUE, draw_line = TRUE,
   draw_box = FALSE, box_fill = grey(0.95),
-  box_line = NA, ...
+  box_line = NULL, ...
 ) {
   
-  # Filtering 
+  # Filtering
   # ----------
   # remove NAs if necessary
   valid <- !is.na(x) & !is.na(y)
@@ -91,11 +97,10 @@ panel.directlabel <- function(
   }
   
   # apply filtering
+  if (all(!valid)) return(NULL)
   x <- x[valid]; y <- y[valid]
-  if (!is.null(groups)) groups <- groups[valid]
   if (!is.null(subscripts)) subscripts <- subscripts[valid]
-  
-  
+
   # groups should be factor, otherwise coerce to it
   if (is.null(col)) {
     if (!is.null(groups)) {
@@ -132,7 +137,11 @@ panel.directlabel <- function(
   
   # apply label placing algorithm
   coords <- directlabels::apply.method(
-    method, d = data.frame(x = x_cm, y = y_cm, groups = labels, index = 1:length(x)))
+    method, d = data.frame(
+      x = x_cm, y = y_cm, groups = labels, 
+      cex = rep(cex, length(x)), 
+      index = 1:length(x))
+    )
   # sort not by label number of characters, but by original order
   coords <- coords[order(coords$index), ]
   
@@ -152,6 +161,11 @@ panel.directlabel <- function(
     panel.segments(x, y, coords$x, coords$y, col = col, ...)
   }
   if (draw_box) {
+    box_line <- if (is.null(box_line)) NA else 
+      if (is.logical(box_line)) {
+        if (box_line) col else NA
+      } else
+      box_line
     panel.rect(
       xleft = coords$left + coords$x - x, 
       ybottom = coords$bottom + coords$y - y, 
@@ -160,6 +174,9 @@ panel.directlabel <- function(
       col = box_fill, border = box_line, ...)
   }
   if (draw_text) {
-    panel.text(coords$x, coords$y, labels = coords$groups, col = col, cex = 0.8, ...)
+    panel.text(
+      coords$x, coords$y, 
+      labels = coords$groups, 
+      col = col, cex = coords$cex, ...)
   }
 }
