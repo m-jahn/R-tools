@@ -48,7 +48,14 @@ top level function), or NULL (the default)}
 \item{...}{other arguments passed to the function}
 }
 \description{
-Draw text labels for all points of a scatterplot using directlabels package
+Draw text labels for all points of a scatterplot using functions from 
+\code{directlabels}.
+In contrast to the functionality of the original directlabels package,
+every point is labelled instead of groups. Labels are also independent from
+the grouping variable, so that e.g. colors indicate a grouping variable and 
+labels another. By default, labels adapt the graphical parameters of the 
+higher level plot, including coloring according to groups. However, many parameters
+can be customized.
 }
 \examples{
 library(grid)
@@ -59,7 +66,7 @@ data("mtcars")
 mtcars$car <- rownames(mtcars)
 
 # A standard example using lattice grouping and paneling;
-# We can also change draw boxes around labels and change label size
+# We can also draw boxes around labels and change label size
 xyplot(mpg ~ wt | factor(cyl), mtcars,
   groups = cyl, pch = 19, labels = mtcars$car,
   as.table = TRUE, layout = c(3, 1), cex = 0.6,
@@ -76,7 +83,18 @@ xyplot(mpg ~ wt | factor(cyl), mtcars,
   as.table = TRUE, layout = c(3, 1),
   panel = function(x, y, subscripts, ...) {
     panel.xyplot(x, y, ...)
-    panel.directlabel(x, y, draw_box = TRUE, subscripts = subscripts, ...)
+    panel.directlabel(x, y, subscripts = subscripts, 
+      draw_box = TRUE, box_fill = "white", ...)
+  }
+)
+
+# An example without panels and more groups
+xyplot(mpg ~ wt, mtcars,
+  groups = hp, pch = 19, 
+  labels = mtcars$wt, cex = 0.6,
+  panel = function(x, y, ...) {
+    panel.xyplot(x, y, ...)
+    panel.directlabel(x, y, draw_box = TRUE, box_line = TRUE, ...)
   }
 )
 

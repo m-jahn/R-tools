@@ -1,6 +1,13 @@
 #' Point labels for scatterplots
 #' 
-#' Draw text labels for all points of a scatterplot using directlabels package
+#' Draw text labels for all points of a scatterplot using functions from 
+#' \code{directlabels}.
+#' In contrast to the functionality of the original directlabels package,
+#' every point is labelled instead of groups. Labels are also independent from
+#' the grouping variable, so that e.g. colors indicate a grouping variable and 
+#' labels another. By default, labels adapt the graphical parameters of the 
+#' higher level plot, including coloring according to groups. However, many parameters
+#' can be customized.
 #' 
 #' @importFrom lattice trellis.par.get
 #' @importFrom lattice panel.text
@@ -10,6 +17,7 @@
 #' @importFrom directlabels apply.method
 #' @importFrom grid convertX
 #' @importFrom grid convertY
+#' @importFrom stats ave
 #' 
 #' @param x,y (numeric) vectors representing x and y coordinates of points
 #' @param groups grouping variable passed down from xyplot (does not need to be specified)
@@ -42,7 +50,7 @@
 #' mtcars$car <- rownames(mtcars)
 #' 
 #' # A standard example using lattice grouping and paneling;
-#' # We can also change draw boxes around labels and change label size
+#' # We can also draw boxes around labels and change label size
 #' xyplot(mpg ~ wt | factor(cyl), mtcars,
 #'   groups = cyl, pch = 19, labels = mtcars$car,
 #'   as.table = TRUE, layout = c(3, 1), cex = 0.6,
@@ -59,7 +67,18 @@
 #'   as.table = TRUE, layout = c(3, 1),
 #'   panel = function(x, y, subscripts, ...) {
 #'     panel.xyplot(x, y, ...)
-#'     panel.directlabel(x, y, draw_box = TRUE, subscripts = subscripts, ...)
+#'     panel.directlabel(x, y, subscripts = subscripts, 
+#'       draw_box = TRUE, box_fill = "white", ...)
+#'   }
+#' )
+#' 
+#' # An example without panels and more groups
+#' xyplot(mpg ~ wt, mtcars,
+#'   groups = hp, pch = 19, 
+#'   labels = mtcars$wt, cex = 0.6,
+#'   panel = function(x, y, ...) {
+#'     panel.xyplot(x, y, ...)
+#'     panel.directlabel(x, y, draw_box = TRUE, box_line = TRUE, ...)
 #'   }
 #' )
 #' 
@@ -131,6 +150,15 @@ panel.directlabel <- function(
     stop("No subscripts argument supplied. Use 'panel = function(x, y, subscripts, ...)'")
   }
   
+  # rename duplicated labels with incremental index numbers
+  labels <- stats::ave(labels, labels, FUN = function(x) {
+    if (length(x) == 1) return(x)
+    else {
+      index <- 1 + cumsum(as.numeric(duplicated(x)))
+      paste0(x, "_", index)
+    }
+  })
+  
   # convert user coordinate units to cm (see apply.method manual)
   x_cm <- grid::convertX(unit(x, "native"), unitTo = "cm", valueOnly = TRUE)
   y_cm <- grid::convertY(unit(y, "native"), unitTo = "cm", valueOnly = TRUE)
@@ -138,45 +166,60 @@ panel.directlabel <- function(
   # apply label placing algorithm
   coords <- directlabels::apply.method(
     method, d = data.frame(
-      x = x_cm, y = y_cm, groups = labels, 
+      x = x_cm, y = y_cm, 
+      x_orig = x_cm, y_orig = y_cm,
+      groups = labels, 
       cex = rep(cex, length(x)), 
-      index = 1:length(x))
+      index = 1:length(x)
     )
-  # sort not by label number of characters, but by original order
+  )
+  
+  # sort not by length of character labels, but by original order
   coords <- coords[order(coords$index), ]
+  # remove indexes from labels
+  coords$groups <- gsub("\\_[0-9]*$", "", coords$groups)
   
   # convert back to native units
-  coords[c("x", "w", "right", "left")] <-
-    apply(coords[c("x", "w", "right", "left")], 2, function(x) {
+  coords[c("x", "x_orig", "w", "right", "left")] <-
+    apply(coords[c("x", "x_orig", "w", "right", "left")], 2, function(x) {
       grid::convertX(unit(x, "cm"), unitTo = "native", valueOnly = TRUE)
     })
   
-  coords[c("y", "h", "top", "bottom")] <-
-    apply(coords[c("y", "h", "top", "bottom")], 2, function(x) {
+  coords[c("y", "y_orig", "h", "top", "bottom")] <-
+    apply(coords[c("y", "y_orig", "h", "top", "bottom")], 2, function(x) {
       grid::convertY(unit(x, "cm"), unitTo = "native", valueOnly = TRUE)
     })
   
-  # draw label lines, boxes and text
+  # draw label lines
   if (draw_line) {
-    panel.segments(x, y, coords$x, coords$y, col = col, ...)
+    with(coords,
+      panel.segments(x_orig, y_orig, x, y, col = col, ...)
+    )
   }
+  
+  # draw boxes
   if (draw_box) {
     box_line <- if (is.null(box_line)) NA else 
       if (is.logical(box_line)) {
         if (box_line) col else NA
       } else
       box_line
-    panel.rect(
-      xleft = coords$left + coords$x - x, 
-      ybottom = coords$bottom + coords$y - y, 
-      xright = coords$right + coords$x - x, 
-      ytop = coords$top + coords$y - y, 
-      col = box_fill, border = box_line, ...)
+    
+    with(coords,
+      panel.rect(
+        xleft = left + x - x_orig, 
+        ybottom = bottom + y - y_orig, 
+        xright = right + x - x_orig, 
+        ytop = top + y - y_orig, 
+        col = box_fill, border = box_line, ...)
+    )
   }
+  
+  # draw text
   if (draw_text) {
-    panel.text(
-      coords$x, coords$y, 
-      labels = coords$groups, 
-      col = col, cex = coords$cex, ...)
+    with(coords, 
+      panel.text(x, y, labels = groups, 
+        col = col, cex = cex, ...)
+    )
   }
 }
