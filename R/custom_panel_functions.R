@@ -226,17 +226,26 @@ panel.key <- function (labels, which.panel = 1, pch = 1, cex = 0.8,
 #' @param col,lwd graphical parameters for lines and labels
 #' @param margin (numeric) margin of labels to the plot edges in Normalised Parent 
 #'   Coordinates, default is 0.1
+#' @param na.rm (logical) Should NA or Inf values be removed automatically? Default is FAlSE
 #' @param ... other arguments passed to the function
-#' 
 #' @export
 # ------------------------------------------------------------------------------
 panel.quadrants <- function (x, y, h = NULL, v = NULL, 
   labels = "percent", col = grey(0.5), margin = 0.1,
-  lwd = trellis.par.get()$superpose.polygon$lwd[1], ...)
+  lwd = trellis.par.get()$superpose.polygon$lwd[1], 
+  na.rm = FALSE, ...)
 { 
+  
   # remove inf or NA values
-  index = !{is.infinite(x*y) | is.na(x*y)}
-  x = x[index]; y = y[index]
+  index = !(is.infinite(x*y) | is.na(x*y))
+  if (!all(index)) {
+    if (na.rm) {
+      x = x[index]; y = y[index]
+      cat(sum(!index), "NA / Inf values were removed\n")
+    } else {
+      cat(sum(!index), "NA / Inf values were not removed\n")
+    }
+  } 
   
   # drawing the horizontal and vertical lines
   if (is.null(h))
@@ -247,10 +256,10 @@ panel.quadrants <- function (x, y, h = NULL, v = NULL,
   
   # plot percentages of the 4 quadrants as text
   quadrant <- list(
-    Q1 = sum({x < v & y > h}),
-    Q2 = sum({x > v & y > h}),
-    Q3 = sum({x > v & y < h}),
-    Q4 = sum({x < v & y < h})
+    Q1 = sum(x <= v & y >  h),
+    Q2 = sum(x >  v & y >  h),
+    Q3 = sum(x >  v & y <= h),
+    Q4 = sum(x <= v & y <= h)
   )
   
   # can either plot events or percentage, or no labels

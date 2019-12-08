@@ -6,7 +6,7 @@
 \usage{
 panel.quadrants(x, y, h = NULL, v = NULL, labels = "percent",
   col = grey(0.5), margin = 0.1,
-  lwd = trellis.par.get()$superpose.polygon$lwd[1], ...)
+  lwd = trellis.par.get()$superpose.polygon$lwd[1], na.rm = FALSE, ...)
 }
 \arguments{
 \item{x, y}{(numeric) variables to be plotted}
@@ -21,6 +21,8 @@ type of summary is plottted per quadrant}
 
 \item{margin}{(numeric) margin of labels to the plot edges in Normalised Parent 
 Coordinates, default is 0.1}
+
+\item{na.rm}{(logical) Should NA or Inf values be removed automatically? Default is FAlSE}
 
 \item{...}{other arguments passed to the function}
 }
