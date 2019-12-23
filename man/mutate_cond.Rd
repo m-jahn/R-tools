@@ -9,14 +9,25 @@ mutate_cond(.data, condition, envir = parent.frame(), ...)
 \arguments{
 \item{.data}{(data.frame) data frame or tibble that is to be mutated}
 
-\item{condition}{(logical) predicates defined in terms of the variables in .data, the same way as filter() is used.}
+\item{condition}{(logical) predicates defined in terms of the variables in 
+.data, the same way as \code{filter()} is used.}
 
 \item{envir}{the environment. By default the environment of the function}
 
-\item{...}{other arguments passed to mutate()}
+\item{...}{other arguments passed to \code{mutate()}}
 }
 \description{
-This function is a good answer from Stack overflow. It is a 
-conditional mutate() that mutates column x only at rows satisfying 
+This function is a good answer from Stackoverflow. It is a 
+conditional \code{mutate()} that mutates column x only at rows satisfying 
 condition y == 'z'
+}
+\examples{
+df <- data.frame(
+  A = letters[1:10], 
+  B = sample(1:3, 10, replace = TRUE),
+  stringsAsFactors = FALSE
+)
+
+mutate_cond(df, B == 3, A = toupper(A))
+
 }
