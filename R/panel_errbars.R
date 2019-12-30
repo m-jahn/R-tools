@@ -13,6 +13,7 @@
 #' @param col (character) color (vector) to be used for points and lines. 
 #'   The default, NULL, uses colors supplied by the top level function.
 #' @param ewidth width of the error bar whiskers
+#' @param beside (logical) draw bars/points next to each other (default: FALSE)
 #' @param FUN_mean the function used to calculate group (x-variable) means
 #' @param FUN_errb the function used to calculate group (x-variable) errors
 #' @param ... other arguments passed to the function
@@ -48,7 +49,7 @@
 #'   panel = function(x, y, ...) {
 #'     panel.stripplot(x, y, jitter.data = TRUE, 
 #'       horizontal = FALSE, amount = 0.15, alpha = 0.3, ...)
-#'     panel.errbars(x, y, ...)
+#'     panel.errbars(x, y, beside = TRUE, ...)
 #'   }
 #' )
 #' 
@@ -56,7 +57,7 @@
 # ------------------------------------------------------------------------------
 panel.errbars <- function (x, y, 
   groups = NULL, subscripts = NULL,
-  col = NULL, ewidth = 0.08, 
+  col = NULL, ewidth = 0.08, beside = FALSE,
   FUN_mean = function(x) mean(x, na.rm = TRUE),
   FUN_errb = function(x) sd(x, na.rm = TRUE), ...)
 { 
@@ -77,8 +78,12 @@ panel.errbars <- function (x, y,
     }
   }
   
-  # loop through different groups (at least one)
+  # define subset of groups and nudge margin
   subg <- as.numeric(groups[subscripts])
+  nudge <- seq_along(levels(groups)) * 2 * ewidth
+  nudge <- nudge-max(nudge)/2-ewidth
+  
+  # loop through different groups (at least one)
   for (val in unique(subg)) {
     
     x_sub <- x[subg %in% val]
@@ -87,7 +92,10 @@ panel.errbars <- function (x, y,
     means <- tapply(y_sub, x_sub, FUN_mean)
     stdev <- tapply(y_sub, x_sub, FUN_errb)
     x_sub <- unique(x_sub)
+    
     if (is.factor(x_sub)) x_sub <- sort(as.numeric(x_sub))
+    if (beside) x_pos <- x_sub + nudge[val] else x_pos <- x_sub
+    
     Y <- as.matrix(cbind(means, means-stdev, means+stdev))
     y_sub <- Y[x_sub, 1]
     y0 <- Y[x_sub, 2]
@@ -95,13 +103,13 @@ panel.errbars <- function (x, y,
     offs <- ewidth/2
     
     # plot line segments and points
-    panel.segments(x0 = x_sub, x1 = x_sub, y0 = y0, y1 = y1, 
+    panel.segments(x0 = x_pos, x1 = x_pos, y0 = y0, y1 = y1, 
       col = col[val], ...)
-    panel.segments(x0 = x_sub - offs, x1 = x_sub + offs, y0 = y0, y1 = y0, 
+    panel.segments(x0 = x_pos - offs, x1 = x_pos + offs, y0 = y0, y1 = y0, 
       col = col[val], ...)
-    panel.segments(x0 = x_sub - offs, x1 = x_sub + offs, y0 = y1, y1 = y1, 
+    panel.segments(x0 = x_pos - offs, x1 = x_pos + offs, y0 = y1, y1 = y1, 
       col = col[val], ...)
-    panel.xyplot(x_sub, y_sub, col.symbol = col[val], ...)
+    panel.xyplot(x_pos, y_sub, col.symbol = col[val], ...)
   }
   
 }

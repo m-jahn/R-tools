@@ -5,8 +5,8 @@
 \title{Draw error bars in lattice plots}
 \usage{
 panel.errbars(x, y, groups = NULL, subscripts = NULL, col = NULL,
-  ewidth = 0.08, FUN_mean = function(x) mean(x, na.rm = TRUE),
-  FUN_errb = function(x) sd(x, na.rm = TRUE), ...)
+  ewidth = 0.08, beside = FALSE, FUN_mean = function(x) mean(x, na.rm
+  = TRUE), FUN_errb = function(x) sd(x, na.rm = TRUE), ...)
 }
 \arguments{
 \item{x, y}{(numeric, character) variables to be plotted. The x variable 
@@ -22,6 +22,8 @@ The default, NULL, uses colors supplied by the top level function.}
 
 \item{ewidth}{width of the error bar whiskers}
 
+\item{beside}{(logical) draw bars/points next to each other (default: FALSE)}
+
 \item{FUN_mean}{the function used to calculate group (x-variable) means}
 
 \item{FUN_errb}{the function used to calculate group (x-variable) errors}
@@ -31,6 +33,8 @@ The default, NULL, uses colors supplied by the top level function.}
 \description{
 This custom panel function for lattice plots allows to draw
 symbols with error bars for arbitrary groups of data points.
+Error bars will be drawn for groups of identical x values with
+optional subsetting by grouping or paneling variables.
 }
 \examples{
 library(lattice)
@@ -63,7 +67,7 @@ xyplot(mpg ~ factor(cyl) | factor(vs), mtcars,
   panel = function(x, y, ...) {
     panel.stripplot(x, y, jitter.data = TRUE, 
       horizontal = FALSE, amount = 0.15, alpha = 0.3, ...)
-    panel.errbars(x, y, ...)
+    panel.errbars(x, y, beside = TRUE, ...)
   }
 )
 
