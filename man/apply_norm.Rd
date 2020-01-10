@@ -4,8 +4,12 @@
 \alias{apply_norm}
 \title{Apply normalization based on different published methods}
 \usage{
-apply_norm(data, norm_function = "normalizeMedianValues",
-  sample_cols = 1:ncol(data), ref_cols = NULL)
+apply_norm(
+  data,
+  norm_function = "normalizeMedianValues",
+  sample_cols = 1:ncol(data),
+  ref_cols = NULL
+)
 }
 \arguments{
 \item{data}{the input data frame}

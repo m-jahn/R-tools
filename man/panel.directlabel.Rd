@@ -4,11 +4,24 @@
 \alias{panel.directlabel}
 \title{Point labels for scatterplots}
 \usage{
-panel.directlabel(x, y, groups = NULL, subscripts = NULL,
-  labels = NULL, col = NULL, cex = 0.8, x_boundary = NULL,
-  y_boundary = NULL, method = directlabels::smart.grid,
-  draw_text = TRUE, draw_line = TRUE, draw_box = FALSE,
-  box_fill = grey(0.95), box_line = NULL, ...)
+panel.directlabel(
+  x,
+  y,
+  groups = NULL,
+  subscripts = NULL,
+  labels = NULL,
+  col = NULL,
+  cex = 0.8,
+  x_boundary = NULL,
+  y_boundary = NULL,
+  method = directlabels::smart.grid,
+  draw_text = TRUE,
+  draw_line = TRUE,
+  draw_box = FALSE,
+  box_fill = grey(0.95),
+  box_line = NULL,
+  ...
+)
 }
 \arguments{
 \item{x, y}{(numeric) vectors representing x and y coordinates of points}

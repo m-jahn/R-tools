@@ -4,10 +4,21 @@
 \alias{panel.pvalue}
 \title{Calculate and draw p-values in lattice plots}
 \usage{
-panel.pvalue(x, y, std = NULL, symbol = TRUE, pvalue = FALSE,
-  pval_digits = 2, cex = 0.8, offset = 1, fixed_pos = NULL,
-  verbose = FALSE, alternative = "two.sided",
-  col = trellis.par.get()$plot.symbol$col, ...)
+panel.pvalue(
+  x,
+  y,
+  std = NULL,
+  symbol = TRUE,
+  pvalue = FALSE,
+  pval_digits = 2,
+  cex = 0.8,
+  offset = 1,
+  fixed_pos = NULL,
+  verbose = FALSE,
+  alternative = "two.sided",
+  col = trellis.par.get()$plot.symbol$col,
+  ...
+)
 }
 \arguments{
 \item{x, y}{(numeric, character) variables to be plotted. The x variable 

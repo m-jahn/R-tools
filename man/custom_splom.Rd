@@ -4,10 +4,22 @@
 \alias{custom_splom}
 \title{Custom scatterplot matrix (SPLOM)}
 \usage{
-custom_splom(df, ..., aspect = 1, between = list(x = 0.5, y = 0.5),
-  col_palette = c("steelblue", grey(0.95), "darkorange"), scales = 4,
-  strip = NULL, groups = NULL, main = NULL, xlab = NULL,
-  ylab = NULL, pch = 19, col = grey(0.5), cex = 0.8)
+custom_splom(
+  df,
+  ...,
+  aspect = 1,
+  between = list(x = 0.5, y = 0.5),
+  col_palette = c("steelblue", grey(0.95), "darkorange"),
+  scales = 4,
+  strip = NULL,
+  groups = NULL,
+  main = NULL,
+  xlab = NULL,
+  ylab = NULL,
+  pch = 19,
+  col = grey(0.5),
+  cex = 0.8
+)
 }
 \arguments{
 \item{df}{(data.frame) data frame whose columns are plotted against each other}

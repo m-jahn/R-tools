@@ -4,9 +4,18 @@
 \alias{panel.quadrants}
 \title{Draw quadrants and quadrant statistics in lattice plots}
 \usage{
-panel.quadrants(x, y, h = NULL, v = NULL, labels = "percent",
-  col = grey(0.5), margin = 0.1,
-  lwd = trellis.par.get()$superpose.polygon$lwd[1], na.rm = FALSE, ...)
+panel.quadrants(
+  x,
+  y,
+  h = NULL,
+  v = NULL,
+  labels = "percent",
+  col = grey(0.5),
+  margin = 0.1,
+  lwd = trellis.par.get()$superpose.polygon$lwd[1],
+  na.rm = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x, y}{(numeric) variables to be plotted}

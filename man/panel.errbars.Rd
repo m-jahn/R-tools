@@ -4,9 +4,18 @@
 \alias{panel.errbars}
 \title{Draw error bars in lattice plots}
 \usage{
-panel.errbars(x, y, groups = NULL, subscripts = NULL, col = NULL,
-  ewidth = 0.08, beside = FALSE, FUN_mean = function(x) mean(x, na.rm
-  = TRUE), FUN_errb = function(x) sd(x, na.rm = TRUE), ...)
+panel.errbars(
+  x,
+  y,
+  groups = NULL,
+  subscripts = NULL,
+  col = NULL,
+  ewidth = 0.08,
+  beside = FALSE,
+  FUN_mean = function(x) mean(x, na.rm = TRUE),
+  FUN_errb = function(x) sd(x, na.rm = TRUE),
+  ...
+)
 }
 \arguments{
 \item{x, y}{(numeric, character) variables to be plotted. The x variable 

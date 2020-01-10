@@ -4,8 +4,14 @@
 \alias{GetTopGO}
 \title{Convenience wrapper to TopGO package (Rahnenfueher et al.)}
 \usage{
-GetTopGO(df = NULL, GeneID = NULL, Gene.ontology.IDs = NULL,
-  cluster = NULL, selected.cluster, topNodes = 50)
+GetTopGO(
+  df = NULL,
+  GeneID = NULL,
+  Gene.ontology.IDs = NULL,
+  cluster = NULL,
+  selected.cluster,
+  topNodes = 50
+)
 }
 \arguments{
 \item{df}{an (optional) data.frame with the three columns specified below}

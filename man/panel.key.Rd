@@ -4,12 +4,22 @@
 \alias{panel.key}
 \title{Draw custom keys in lattice plots}
 \usage{
-panel.key(groups = NULL, labels = NULL, which.panel = 1, pch = 1,
-  cex = 0.8, point.cex = NULL, points = TRUE, lines = FALSE,
-  rectangles = FALSE, col = NULL,
+panel.key(
+  groups = NULL,
+  labels = NULL,
+  which.panel = 1,
+  pch = 1,
+  cex = 0.8,
+  point.cex = NULL,
+  points = TRUE,
+  lines = FALSE,
+  rectangles = FALSE,
+  col = NULL,
   lwd = trellis.par.get()$superpose.line$lwd[1],
-  lty = trellis.par.get()$superpose.line$lty[1], corner = c(0.1, 0.9),
-  ...)
+  lty = trellis.par.get()$superpose.line$lty[1],
+  corner = c(0.1, 0.9),
+  ...
+)
 }
 \arguments{
 \item{groups}{grouping variable passed down from xyplot (does not need to be specified)}

@@ -4,8 +4,18 @@
 \alias{panel.beeswarm}
 \title{Panel function for beeswarm plots}
 \usage{
-panel.beeswarm(x, y, groups = NULL, subscripts = NULL, bin_x = FALSE,
-  bin_y = FALSE, breaks_x = 10, breaks_y = 10, spread = 0.1, ...)
+panel.beeswarm(
+  x,
+  y,
+  groups = NULL,
+  subscripts = NULL,
+  bin_x = FALSE,
+  bin_y = FALSE,
+  breaks_x = 10,
+  breaks_y = 10,
+  spread = 0.1,
+  ...
+)
 }
 \arguments{
 \item{x, y}{(numeric, factor) X and Y variables passed to \code{panel.xyplot()}}

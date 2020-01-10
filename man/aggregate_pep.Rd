@@ -4,9 +4,18 @@
 \alias{aggregate_pep}
 \title{Aggregate peptide abundances to protein abundances}
 \usage{
-aggregate_pep(data, sample_cols, protein_col, peptide_col,
-  n_protein_col = NULL, split_ambiguous = FALSE, split_char = NULL,
-  weight_col = NULL, weight_threshold = 0.5, method = "sum")
+aggregate_pep(
+  data,
+  sample_cols,
+  protein_col,
+  peptide_col,
+  n_protein_col = NULL,
+  split_ambiguous = FALSE,
+  split_char = NULL,
+  weight_col = NULL,
+  weight_threshold = 0.5,
+  method = "sum"
+)
 }
 \arguments{
 \item{data}{the input data frame}
