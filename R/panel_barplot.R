@@ -61,21 +61,22 @@ panel.barplot <- function (x, y,
   FUN_errb = function(x) sd(x, na.rm = TRUE), ...)
 {
   # groups should be factor, otherwise coerce to it
-  if (is.null(col)) {
-    if (!is.null(groups)) {
-      groups <- as.factor(groups)
-      
-      # determine graphical parameters from groups
+  if (!is.null(groups)) {
+    groups <- as.factor(groups)
+    # determine graphical parameters from groups
+    if (is.null(col))
       cols <- lattice::trellis.par.get()$superpose.symbol$col
-      col <- rep(cols, length.out = length(levels(groups)))
-    
-    # default color if no groups is supplied
-    } else {
-      groups = factor(rep(1, length(x)))
-      subscripts = seq_along(groups)
+    else cols <- col
+    col <- rep(cols, length.out = length(levels(groups)))
+  
+  # default color if no groups is supplied
+  } else {
+    groups = factor(rep(1, length(x)))
+    subscripts = seq_along(groups)
+    if (is.null(col))
       col <- lattice::trellis.par.get()$plot.symbol$col
-    }
   }
+  
   
   panel.rect <- function(
     xleft, ybottom, xright, ytop, 
