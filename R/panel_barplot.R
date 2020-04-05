@@ -14,6 +14,7 @@
 #'   The default, NULL, uses colors supplied by the top level function.
 #' @param ewidth (numeric) width of the error bars and whiskers
 #' @param beside (logical) draw bars/points next to each other (default: FALSE)
+#' @param origin (numeric) Y coordinate where bars should originate (default NULL means bottom axis)
 #' @param FUN_mean the function used to calculate group (x-variable) means
 #' @param FUN_errb the function used to calculate group (x-variable) errors
 #' @param ... other arguments passed to the function
@@ -56,7 +57,8 @@
 # ------------------------------------------------------------------------------
 panel.barplot <- function (x, y,
   groups = NULL, subscripts = NULL,
-  col = NULL, ewidth = 0.08, beside = FALSE,
+  col = NULL, ewidth = 0.08, 
+  beside = FALSE, origin = NULL,
   FUN_mean = function(x) mean(x, na.rm = TRUE),
   FUN_errb = function(x) sd(x, na.rm = TRUE), ...)
 {
@@ -113,13 +115,14 @@ panel.barplot <- function (x, y,
     
     if (is.factor(x_sub)) x_sub <- sort(as.numeric(x_sub))
     if (beside) x_pos <- x_sub + nudge[val] else x_pos <- x_sub
+    if (is.null(origin)) ybottom <- current.panel.limits()$ylim[1]
+    else ybottom <- origin
     
     Y <- as.matrix(cbind(means, means-stdev, means+stdev))
     y_sub <- Y[x_sub, 1]
     y0 <- Y[x_sub, 2]
     y1 <- Y[x_sub, 3]
     offs <- ewidth/2
-    ybottom <- current.panel.limits()$ylim[1]
     
     # plot line segments and bars
     panel.segments(x0 = x_pos, x1 = x_pos, y0 = y0, y1 = y1, 

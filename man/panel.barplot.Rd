@@ -12,6 +12,7 @@ panel.barplot(
   col = NULL,
   ewidth = 0.08,
   beside = FALSE,
+  origin = NULL,
   FUN_mean = function(x) mean(x, na.rm = TRUE),
   FUN_errb = function(x) sd(x, na.rm = TRUE),
   ...
@@ -32,6 +33,8 @@ The default, NULL, uses colors supplied by the top level function.}
 \item{ewidth}{(numeric) width of the error bars and whiskers}
 
 \item{beside}{(logical) draw bars/points next to each other (default: FALSE)}
+
+\item{origin}{(numeric) Y coordinate where bars should originate (default NULL means bottom axis)}
 
 \item{FUN_mean}{the function used to calculate group (x-variable) means}
 
