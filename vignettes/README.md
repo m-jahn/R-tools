@@ -1,41 +1,41 @@
----
-#output: rmarkdown::html_vignette
-title: "Rtools"
-author: "Michael Jahn, "
-date: "`r Sys.Date()`"
-output: github_document
-vignette: >
-  %\VignetteIndexEntry{Rtools}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+Rtools
+================
+Michael Jahn,
+2020-04-22
 
-***
+-----
 
 Utility and wrapper functions for bioinformatics work
 
 ## Description
 
-This package contains utility and wrapper functions that I often use. It is not intended to be a full grown R package but is maintained as a package for the sake of accessability and documentation. Feel free to copy, fork or source functions that you find useful.
+This package contains utility and wrapper functions that I often use. It
+is not intended to be a full grown R package but is maintained as a
+package for the sake of accessability and documentation. Feel free to
+copy, fork or source functions that you find useful.
 
 ## Installation
 
-To install the package directly from github, use this function from `devtools` package in your R session:
+To install the package directly from github, use this function from
+`devtools` package in your R session:
 
-```{r, eval = FALSE}
+``` r
 require(devtools)
 devtools::install_github("https://github.com/m-jahn/R-tools")
 ```
 
 ## R lattice functions
 
-These functions extend or simplify the `panel.function` landscape for `lattice`, a general purpose plotting package from Deepayan Sarkar. Lattice's functionality is comparable to the popular `ggplot` universe but has a slightly different look and feel.
+These functions extend or simplify the `panel.function` landscape for
+`lattice`, a general purpose plotting package from Deepayan Sarkar.
+Lattice’s functionality is comparable to the popular `ggplot` universe
+but has a slightly different look and feel.
 
 ### panel.barplot
 
 Draw barplot with error bars in lattice plots. Supports also grouping.
 
-```{r, fig.height = 3, fig.width = 5}
+``` r
 library(Rtools)
 library(lattice)
 data(mtcars)
@@ -47,7 +47,11 @@ xyplot(mpg ~ factor(cyl), mtcars, lwd = 2,
     panel.barplot(x, y, ...)
   }
 )
+```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+
+``` r
 # using the same variable for x and grouping will
 # result in typical lattice behavior
 xyplot(mpg ~ factor(cyl), mtcars, 
@@ -56,7 +60,11 @@ xyplot(mpg ~ factor(cyl), mtcars,
     panel.barplot(x, y, ...)
   }
 )
+```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
+
+``` r
 # we can also use different variables for the x var, grouping,
 # and paneling. As a visual control that error bars are drawn
 # for the correct groups we overlay the single data points.
@@ -70,12 +78,14 @@ xyplot(mpg ~ factor(cyl) | factor(vs), mtcars,
 )
 ```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
 
 ### panel.beeswarm
 
-Panel function for beeswarm plots. This function builds heavily on the `beeswarm` package.
+Panel function for beeswarm plots. This function builds heavily on the
+`beeswarm` package.
 
-```{r, fig.height = 3, fig.width = 5}
+``` r
 # simple example
 df <- data.frame(
   Y = sample(1:10, 60, replace = TRUE), 
@@ -83,11 +93,19 @@ df <- data.frame(
 )
 
 xyplot(Y ~ X, df, groups = X, panel = panel.beeswarm)
+```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+``` r
 # but with continuous Y variable, it doesn't work as expected
 df$Y <- rnorm(60)
 xyplot(Y ~ X, df, groups = X, panel = panel.beeswarm)
+```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
+
+``` r
 # for this purpose we can bin the Y variable into groups
 xyplot(Y ~ X, df, groups = X, 
   panel = function(x, y, ...) {
@@ -96,11 +114,14 @@ xyplot(Y ~ X, df, groups = X,
 })
 ```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->
+
 ### panel.directlabel
 
-Point labels for scatterplots. This function depends on the directlabels package, but instead of labeling only groups, it labels single points.
+Point labels for scatterplots. This function depends on the directlabels
+package, but instead of labeling only groups, it labels single points.
 
-```{r, fig.height = 4, fig.width = 6}
+``` r
 library(grid)
 library(lattice)
 library(directlabels)
@@ -118,7 +139,11 @@ xyplot(mpg ~ wt | factor(cyl), mtcars,
     panel.directlabel(x, y, draw_box = TRUE, box_line = TRUE, ...)
   }
 )
+```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+``` r
 # A similar plot but without grouping. This requires explicit
 # use of subscripts
 xyplot(mpg ~ wt | factor(cyl), mtcars,
@@ -130,7 +155,11 @@ xyplot(mpg ~ wt | factor(cyl), mtcars,
       draw_box = TRUE, box_fill = "white", ...)
   }
 )
+```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+
+``` r
 # An example without panels and more groups
 xyplot(mpg ~ wt, mtcars,
   groups = hp, pch = 19, 
@@ -142,12 +171,14 @@ xyplot(mpg ~ wt, mtcars,
 )
 ```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-4-3.png)<!-- -->
 
 ### panel.errbars
 
-Draw error bars in lattice plots. This functions is very similar to `panel.barplot` only with points instead of bars.
+Draw error bars in lattice plots. This functions is very similar to
+`panel.barplot` only with points instead of bars.
 
-```{r, fig.height = 3, fig.width = 5}
+``` r
 library(lattice)
 data(mtcars)
 
@@ -159,7 +190,11 @@ xyplot(mpg ~ factor(cyl), mtcars,
     panel.errbars(x, y, ...)
   }
 )
+```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
 # using the same variable for x and grouping will
 # result in typical lattice behavior
 xyplot(mpg ~ factor(cyl), mtcars,
@@ -168,7 +203,11 @@ xyplot(mpg ~ factor(cyl), mtcars,
     panel.errbars(x, y, ...)
   }
 )
+```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+
+``` r
 # we can also use different variables for the x var, grouping,
 # and paneling. As a visual control that error bars are drawn 
 # for the correct groups we overlay the single data points. 
@@ -183,11 +222,15 @@ xyplot(mpg ~ factor(cyl) | factor(vs), mtcars,
 )
 ```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
+
 ### panel.key
 
-Draw custom keys in lattice plots. Allows to draw a key (legend) inside a lattice panel, with more customization options than the lattice default.
+Draw custom keys in lattice plots. Allows to draw a key (legend) inside
+a lattice panel, with more customization options than the lattice
+default.
 
-```{r, fig.height = 3, fig.width = 5}
+``` r
 library(lattice)
 data(mtcars)
 
@@ -205,11 +248,18 @@ xyplot(mpg ~ 1/wt | factor(vs), mtcars,
 )
 ```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
 ### panel.piechart
 
-Draw pie and ring charts in lattice plots. This custom panel function for lattice plots allows to draw pie charts (or rings) while still being able to use the typical lattice way of subsetting data. The function can be used within xyplot() but only one variable needs to be supplied (x). Grouping is supported in which the x variable is aggregated (summed up) over each unique group.
+Draw pie and ring charts in lattice plots. This custom panel function
+for lattice plots allows to draw pie charts (or rings) while still being
+able to use the typical lattice way of subsetting data. The function can
+be used within xyplot() but only one variable needs to be supplied (x).
+Grouping is supported in which the x variable is aggregated (summed up)
+over each unique group.
 
-```{r, fig.height = 3, fig.width = 5}
+``` r
 library(grid)
 library(lattice)
 
@@ -223,7 +273,11 @@ xyplot( ~ Rate | Sex, USMortality,
     panel.piechart(x, ...)
   }
 )
+```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+``` r
 # A more advanced example using grouping and
 # adjusting graphical parameters. The main variable 
 # 'x' is now summed up for each value of 'groups'
@@ -239,11 +293,13 @@ xyplot( ~ Rate | Sex, USMortality,
 )
 ```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
+
 ### panel.pvalue
 
 Calculate and draw p-values in lattice plots.
 
-```{r, fig.height = 3, fig.width = 5}
+``` r
 library(lattice)
 data(mtcars)
 
@@ -256,11 +312,16 @@ xyplot(mpg ~ factor(cyl), mtcars, groups = cyl, pch = 19, cex = 0.7,
 })
 ```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
 ### panel.quadrants
 
-Draw quadrants and quadrant statistics in lattice plots. This custom panel function for lattice plots allows to draw custom quadrants and display additional quadrant statistics as often used in biomedial sciences. Groups are ignored.
+Draw quadrants and quadrant statistics in lattice plots. This custom
+panel function for lattice plots allows to draw custom quadrants and
+display additional quadrant statistics as often used in biomedial
+sciences. Groups are ignored.
 
-```{r, fig.height = 3, fig.width = 5}
+``` r
 library(lattice)
 data(mtcars)
 
@@ -276,11 +337,13 @@ xyplot(mpg ~ 1/wt | factor(vs), mtcars,
 )
 ```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
 ### custom.ggplot
 
 Custom theme for lattice plots. The function takes no arguments.
 
-```{r, fig.height = 3, fig.width = 5}
+``` r
 library(lattice)
 data(mtcars)
 
@@ -291,12 +354,13 @@ xyplot(mpg ~ factor(cyl) | gear, mtcars,
 )
 ```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ### custom.lattice
 
 Custom theme for lattice plots. The function takes no arguments.
 
-```{r, fig.height = 3, fig.width = 5}
+``` r
 library(lattice)
 data(mtcars)
 
@@ -307,18 +371,24 @@ xyplot(mpg ~ factor(cyl) | gear, mtcars,
 )
 ```
 
-### custom_splom
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+### custom\_splom
 
 Custom scatterplot matrix (SPLOM)
 
-```{r, fig.width = 6, fig.height = 6}
+``` r
 library(lattice)
 data(mtcars)
 
 # Draw a scatterplot matrix of all variables of a 
 # data frame against each other.
 custom_splom(mtcars[1:5])
+```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+``` r
 # We can customize the scatterplot
 custom_splom(
   mtcars[1:5],
@@ -329,15 +399,22 @@ custom_splom(
 )
 ```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-12-2.png)<!-- -->
+
 ## Molecular biology related functions
 
-### aggregate_pep
+### aggregate\_pep
 
 Aggregate peptide abundances to protein abundances.
 
-Similar to the openMS module ProteinQuantifier, this function provides different methods to aggregate peptide intensities to their parent proteins. It is mainly intended for the use with (raw) Diffacto results, a table of peptide intensities and covariation scores (weights) that can be used to filter peptides before aggregating them up to protein abundances.
+Similar to the openMS module ProteinQuantifier, this function provides
+different methods to aggregate peptide intensities to their parent
+proteins. It is mainly intended for the use with (raw) Diffacto results,
+a table of peptide intensities and covariation scores (weights) that can
+be used to filter peptides before aggregating them up to protein
+abundances.
 
-```{r, message = FALSE, warning = FALSE}
+``` r
 # load additional dependencies
 library(dplyr)
 library(tidyr)
@@ -365,12 +442,24 @@ aggregate_pep(
 )
 ```
 
+    ## # A tibble: 7 x 5
+    ##   protein n_peptides   ab1   ab2   ab3
+    ##   <chr>        <int> <dbl> <dbl> <dbl>
+    ## 1 A                1   9    78    90  
+    ## 2 B                1  17    38    80  
+    ## 3 C                3  78.7  67.2  75.2
+    ## 4 D                2  17.7  21.2  34.2
+    ## 5 E                2  27.7  50.7  67.7
+    ## 6 F                1  32    66    22  
+    ## 7 G                1  81     5     6
 
-### apply_norm
+### apply\_norm
 
-Apply normalization based on different published methods. This function is a wrapper applying different normalization functions from other packages, such as `limma`, `justvsm` and `preprocesscore`.
+Apply normalization based on different published methods. This function
+is a wrapper applying different normalization functions from other
+packages, such as `limma`, `justvsm` and `preprocesscore`.
 
-```{r, message = FALSE, warning = FALSE}
+``` r
 df <- data.frame(
   protein = LETTERS[1:5],
   cond1 = sample(1:100, 5),
@@ -392,18 +481,41 @@ df_norm <- apply_norm(
 
 # the data after normalization
 print(df_norm)
+```
 
+    ##   protein    cond1    cond2     cond3
+    ## 1       A 79.82247 71.79799   4.62739
+    ## 2       B 53.21498 52.37030  60.15607
+    ## 3       C 51.16825 70.10863 115.68474
+    ## 4       D 16.37384 25.34047  53.21498
+    ## 5       E 96.19631 53.21498  20.82325
+
+``` r
 # Has the normalization worked? We can compare column medians
 # for original and normalized data
 apply(df[2:4], 2, median)
+```
+
+    ## cond1 cond2 cond3 
+    ##    52    63    46
+
+``` r
 apply(df_norm[2:4], 2, median)
 ```
 
+    ##    cond1    cond2    cond3 
+    ## 53.21498 53.21498 53.21498
+
 ### GetTopGO
 
-Convenience wrapper to TopGO package (Rahnenfueher et al.). This function carries out a TopGO gene ontology enrichment on a data set with custom protein/gene IDs and GO terms. The function takes as main input a data frame with three specific columns: cluster numbers, Gene IDs, and GO terms. Alternatively, these can also be supplied as three individual lists.
+Convenience wrapper to TopGO package (Rahnenfueher et al.). This
+function carries out a TopGO gene ontology enrichment on a data set with
+custom protein/gene IDs and GO terms. The function takes as main input a
+data frame with three specific columns: cluster numbers, Gene IDs, and
+GO terms. Alternatively, these can also be supplied as three individual
+lists.
 
-```{r, message = FALSE, warning = FALSE}
+``` r
 # The get_topgo function will require the TopGO package
 # as an additional dependency that is not automatically
 # attached with this package.
@@ -436,12 +548,30 @@ df <- data.frame(
 get_topgo(df, selected.cluster = 1, topNodes = 5)
 ```
 
-### silhouette_analysis
+    ##        GO.ID                                  Term Annotated Significant
+    ## 1 GO:0006886       intracellular protein transport         4           4
+    ## 2 GO:0034613         cellular protein localization         4           4
+    ## 3 GO:0046907               intracellular transport         4           4
+    ## 4 GO:0051641                 cellular localization         4           4
+    ## 5 GO:0051649 establishment of localization in cell         4           4
+    ##   Expected classicFisher weightedFisher elimFisher SigGenes
+    ## 1        2         0.048          0.096      0.048  C,E,F,L
+    ## 2        2         0.048          1.000      0.048  C,E,F,L
+    ## 3        2         0.048          1.000      0.048  C,E,F,L
+    ## 4        2         0.048          1.000      0.048  C,E,F,L
+    ## 5        2         0.048          1.000      0.048  C,E,F,L
 
-Wrapper function to perform silhouette analysis on different cluster numbers. Silhouette analysis shows the clusters that have explanatory power. That includes clusters that are best separated from the neighbours 
-resulting in a higher average silhoutte width (the decisive metric to judge optimal cluster number). This function applies the silhouette analysis iteratively for a vector of different cluster numbers and stores results in a list.
+### silhouette\_analysis
 
-```{r, message = FALSE, warning = FALSE}
+Wrapper function to perform silhouette analysis on different cluster
+numbers. Silhouette analysis shows the clusters that have explanatory
+power. That includes clusters that are best separated from the
+neighbours resulting in a higher average silhoutte width (the decisive
+metric to judge optimal cluster number). This function applies the
+silhouette analysis iteratively for a vector of different cluster
+numbers and stores results in a list.
+
+``` r
 # this function requires some additional packlages
 library(lattice)
 library(latticeExtra)
@@ -457,31 +587,46 @@ mat <- matrix(rnorm(1000), ncol = 10)
 # there is clearly no good separation between different clusters of 'genes'
 clust <- hclust(dist(mat))
 plot(clust)
+```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+
+``` r
 # perform silhouette analysis for 2 to 10 different clusters
 sil_result <- silhouette_analysis(mat, n_clusters = 2:10)
+```
 
+    ## Silhouette analysis finished for clusters 2 to 10
+
+``` r
 # plot results
 print(sil_result$plot.clusters, split = c(1,1,2,1), more = TRUE)
 print(sil_result$plot.summary, split = c(2,1,2,1))
 ```
 
-### parse_kegg_brite
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-16-2.png)<!-- -->
 
-Parse Kegg Brite xml files step-by-step. This script is a small utility to parse Kegg Brite XML files and return a regular data frame instead. The function take no other argument than a data frame. Changes that need to be made to the Kegg XML file before applying the function, e.g. simply using a text editor:
+### parse\_kegg\_brite
 
-- replace double spaces ' ' by tabs '\t'
-- remove first lines until regular content begins
-- possibly add some trailing tabs or commas to end of first line (4 to 5) so that read.table knows how many columns to expect
-- read raw data frame into R using read.table("/path/to/file", fill = TRUE, sep = "\t", row.names = NULL, stringsAsFactors = FALSE, quote = "")
+Parse Kegg Brite xml files step-by-step. This script is a small utility
+to parse Kegg Brite XML files and return a regular data frame instead.
+The function take no other argument than a data frame. Changes that need
+to be made to the Kegg XML file before applying the function,
+e.g. simply using a text editor:
 
+  - replace double spaces ’ ’ by tabs ’
+  - remove first lines until regular content begins
+  - possibly add some trailing tabs or commas to end of first line (4 to
+    5) so that read.table knows how many columns to expect
+  - read raw data frame into R using read.table(“/path/to/file”, fill =
+    TRUE, sep = “, row.names = NULL, stringsAsFactors = FALSE, quote
+    =”")
 
-### baranyi_fun
+### baranyi\_fun
 
 Simulate growth according to the Baranyi growth model.
 
-
-```{r, fig.width = 4, fig.height = 3}
+``` r
 # simulate growth according to the Baranyi growth model
 # for a growth period of 100 hours
 biomass <- baranyi_fun(
@@ -492,14 +637,13 @@ biomass <- baranyi_fun(
 plot(0:100, biomass)
 ```
 
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
-
-### gompertzm_fun
+### gompertzm\_fun
 
 Simulate growth according to the Gompertz modified growth model.
 
-
-```{r, fig.width = 4, fig.height = 3}
+``` r
 # simulate growth according to the Baranyi growth model
 # for a growth period of 100 hours
 biomass <- gompertzm_fun(
@@ -509,3 +653,5 @@ biomass <- gompertzm_fun(
 # plot time versus biomass
 plot(0:100, biomass)
 ```
+
+![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
