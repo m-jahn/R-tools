@@ -49,7 +49,7 @@ xyplot(mpg ~ factor(cyl), mtcars, lwd = 2,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 ``` r
 # using the same variable for x and grouping will
@@ -62,7 +62,7 @@ xyplot(mpg ~ factor(cyl), mtcars,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
 
 ``` r
 # we can also use different variables for the x var, grouping,
@@ -78,7 +78,7 @@ xyplot(mpg ~ factor(cyl) | factor(vs), mtcars,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
 
 ### panel.beeswarm
 
@@ -95,7 +95,7 @@ df <- data.frame(
 xyplot(Y ~ X, df, groups = X, panel = panel.beeswarm)
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ``` r
 # but with continuous Y variable, it doesn't work as expected
@@ -103,7 +103,7 @@ df$Y <- rnorm(60)
 xyplot(Y ~ X, df, groups = X, panel = panel.beeswarm)
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
 
 ``` r
 # for this purpose we can bin the Y variable into groups
@@ -114,7 +114,7 @@ xyplot(Y ~ X, df, groups = X,
 })
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->
 
 ### panel.directlabel
 
@@ -141,7 +141,7 @@ xyplot(mpg ~ wt | factor(cyl), mtcars,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
 # A similar plot but without grouping. This requires explicit
@@ -157,7 +157,7 @@ xyplot(mpg ~ wt | factor(cyl), mtcars,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
 
 ``` r
 # An example without panels and more groups
@@ -171,7 +171,7 @@ xyplot(mpg ~ wt, mtcars,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-4-3.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-4-3.png)<!-- -->
 
 ### panel.errbars
 
@@ -192,7 +192,7 @@ xyplot(mpg ~ factor(cyl), mtcars,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
 # using the same variable for x and grouping will
@@ -205,7 +205,7 @@ xyplot(mpg ~ factor(cyl), mtcars,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
 
 ``` r
 # we can also use different variables for the x var, grouping,
@@ -222,7 +222,7 @@ xyplot(mpg ~ factor(cyl) | factor(vs), mtcars,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
 
 ### panel.key
 
@@ -248,7 +248,7 @@ xyplot(mpg ~ 1/wt | factor(vs), mtcars,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ### panel.piechart
 
@@ -275,7 +275,7 @@ xyplot( ~ Rate | Sex, USMortality,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
 # A more advanced example using grouping and
@@ -293,7 +293,7 @@ xyplot( ~ Rate | Sex, USMortality,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
 
 ### panel.pvalue
 
@@ -312,7 +312,7 @@ xyplot(mpg ~ factor(cyl), mtcars, groups = cyl, pch = 19, cex = 0.7,
 })
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ### panel.quadrants
 
@@ -337,7 +337,7 @@ xyplot(mpg ~ 1/wt | factor(vs), mtcars,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ### custom.ggplot
 
@@ -354,7 +354,7 @@ xyplot(mpg ~ factor(cyl) | gear, mtcars,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ### custom.lattice
 
@@ -371,7 +371,7 @@ xyplot(mpg ~ factor(cyl) | gear, mtcars,
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ### custom\_splom
 
@@ -386,7 +386,7 @@ data(mtcars)
 custom_splom(mtcars[1:5])
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 # We can customize the scatterplot
@@ -399,7 +399,7 @@ custom_splom(
 )
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-12-2.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-12-2.png)<!-- -->
 
 ## Molecular biology related functions
 
@@ -589,7 +589,7 @@ clust <- hclust(dist(mat))
 plot(clust)
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 ``` r
 # perform silhouette analysis for 2 to 10 different clusters
@@ -604,7 +604,7 @@ print(sil_result$plot.clusters, split = c(1,1,2,1), more = TRUE)
 print(sil_result$plot.summary, split = c(2,1,2,1))
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-16-2.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-16-2.png)<!-- -->
 
 ### parse\_kegg\_brite
 
@@ -637,7 +637,7 @@ biomass <- baranyi_fun(
 plot(0:100, biomass)
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
 
 ### gompertzm\_fun
 
@@ -654,4 +654,4 @@ biomass <- gompertzm_fun(
 plot(0:100, biomass)
 ```
 
-![](/tmp/Rtmp4z3n0n/preview-25a378c19854.dir/README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
