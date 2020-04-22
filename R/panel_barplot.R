@@ -34,8 +34,8 @@
 #' 
 #' # using the same variable for x and grouping will
 #' # result in typical lattice behavior
-#' xyplot(mpg ~ factor(cyl), mtcars,
-#'   groups = cyl, lwd = 2, pch = 19, cex = 1.5,
+#' xyplot(mpg ~ factor(cyl), mtcars, 
+#'   groups = cyl, lwd = 2,
 #'   panel = function(x, y, ...) {
 #'     panel.barplot(x, y, ...)
 #'   }
@@ -45,12 +45,11 @@
 #' # and paneling. As a visual control that error bars are drawn 
 #' # for the correct groups we overlay the single data points. 
 #' xyplot(mpg ~ factor(cyl) | factor(vs), mtcars,
-#'   groups = gear, lwd = 2, pch = 19, cex = 1.5,
-#'   auto.key = list(columns = 3),
+#'   groups = gear, lwd = 2, auto.key = list(columns = 3),
 #'   panel = function(x, y, ...) {
 #'     panel.barplot(x, y, beside = TRUE, ...)
-#'     panel.stripplot(x, y, jitter.data = TRUE, 
-#'       horizontal = FALSE, amount = 0.15, alpha = 0.3, ...)
+#'     panel.stripplot(x, y, jitter.data = TRUE,
+#'       horizontal = FALSE, amount = 0.15, ...)
 #'   }
 #' )
 #' @export

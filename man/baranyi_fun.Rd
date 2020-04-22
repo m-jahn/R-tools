@@ -18,8 +18,20 @@ baranyi_fun(LOG10N0, LOG10Nmax, mumax, lag, t)
 \item{t}{(numeric) discrete time points}
 }
 \value{
-(numeric) vector of modeled biomass corresponding to input time points
+(numeric) vector of modeled log10 biomass corresponding to input time points
 }
 \description{
-Selection of growth models
+Simulate growth according to the Baranyi growth model
+}
+\examples{
+
+# simulate growth according to the Baranyi growth model
+# for a growth period of 100 hours
+biomass <- baranyi_fun(
+  LOG10N0 = -1, LOG10Nmax = 1,
+  mumax = 0.1, lag = 10, t = 0:100)
+
+# plot time versus biomass
+plot(0:100, biomass)
+
 }

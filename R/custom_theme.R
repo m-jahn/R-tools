@@ -1,10 +1,19 @@
 #' Custom ggplot2 like theme
 #' 
-#' Custom themes for lattice plots
+#' Custom theme for lattice plots. The function takes no arguments.
 #' 
 #' @import colorspace
 #' @import lattice
 #' @import latticeExtra
+#' @examples
+#' library(lattice)
+#' data(mtcars)
+#' 
+#' # colors are more subtle than default lattice theme
+#' xyplot(mpg ~ factor(cyl) | gear, mtcars,
+#'   groups = cyl, auto.key = list(columns = 3),
+#'   par.settings = custom.ggplot()
+#' )
 #' @export
 # ------------------------------------------------------------------------------
 custom.ggplot <- function() {
@@ -19,8 +28,17 @@ custom.ggplot <- function() {
 
 #' Custom grey lattice theme
 #' 
-#' Custom themes for lattice plots
+#' Custom theme for lattice plots. The function takes no arguments.
 #' 
+#' @examples
+#' library(lattice)
+#' data(mtcars)
+#' 
+#' # colors are more subtle than default lattice theme
+#' xyplot(mpg ~ factor(cyl) | gear, mtcars,
+#'   groups = cyl, auto.key = list(columns = 3),
+#'   par.settings = custom.lattice()
+#' )
 #' @export
 # ------------------------------------------------------------------------------
 custom.lattice <- function() {

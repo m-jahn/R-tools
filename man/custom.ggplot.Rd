@@ -7,5 +7,15 @@
 custom.ggplot()
 }
 \description{
-Custom themes for lattice plots
+Custom theme for lattice plots. The function takes no arguments.
+}
+\examples{
+library(lattice)
+data(mtcars)
+
+# colors are more subtle than default lattice theme
+xyplot(mpg ~ factor(cyl) | gear, mtcars,
+  groups = cyl, auto.key = list(columns = 3),
+  par.settings = custom.ggplot()
+)
 }

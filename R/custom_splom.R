@@ -1,6 +1,7 @@
 #' Custom scatterplot matrix (SPLOM)
 #' 
-#' Custom wrapper function around lattice splom with different upper and lower panel
+#' Custom wrapper function around lattice `splom` with different upper and lower panel.
+#' A scatterplot matrix is a tiled plot where all variables of a data frame are plotted against each other.
 #' 
 #' @importFrom lattice splom
 #' @importFrom stats cor
@@ -21,6 +22,23 @@
 #' @param col (character) the color to be used
 #' @param cex (numeric) character size of the symbol
 #' @param ... other arguments passed to the function
+#' 
+#' #' @examples
+#' library(lattice)
+#' data(mtcars)
+#' 
+#' # Draw a scatterplot matrix of all variables of a 
+#' # data frame against each other.
+#' custom_splom(mtcars[1:5])
+#' 
+#' # We can customize the scatterplot
+#' custom_splom(
+#'   mtcars[1:5],
+#'   col_palette = rainbow(4),
+#'   scales = 10, 
+#'   xlab = "data points", ylab = "regression",
+#'   pch = 1, col = 1, cex = 0.6
+#' )
 #' 
 #' @export
 # ------------------------------------------------------------------------------

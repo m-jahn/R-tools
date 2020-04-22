@@ -27,9 +27,34 @@
 #' @return a list with three objects, silhouette analysis data, and two summary plots
 #'   obtained using lattice graphics.
 #' 
+#' @examples
+#' 
+#' # this function requires some additional packlages
+#' library(lattice)
+#' library(latticeExtra)
+#' library(cluster)
+#' library(dplyr)
+#' 
+#' # generate a random matrix that we use for clustering with the 
+#' # format of 100 rows (e.g. determined gene expression) and 10 
+#' # columns (conditions)
+#' mat <- matrix(rnorm(1000), ncol = 10)
+#' 
+#' # we can perform clustering on this matrix using e.g. hclust:
+#' # there is clearly no good separation between different clusters of 'genes'
+#' clust <- hclust(dist(mat))
+#' plot(clust)
+#' 
+#' # perform silhouette analysis for 2 to 10 different clusters
+#' sil_result <- silhouette_analysis(mat, n_clusters = 2:10)
+#' 
+#' # plot results
+#' print(sil_result$plot.clusters, split = c(1,1,2,1), more = TRUE)
+#' print(sil_result$plot.summary, split = c(2,1,2,1))
+#' 
 #' @export
 # ------------------------------------------------------------------------------
-silhouetteAnalysis <- function(
+silhouette_analysis <- function(
   mat, 
   cluster_object = NULL,
   n_clusters

@@ -1,6 +1,6 @@
 #' Baranyi growth model
 #' 
-#' Selection of growth models
+#' Simulate growth according to the Baranyi growth model
 #' 
 #' @import nlstools
 #' 
@@ -10,7 +10,18 @@
 #' @param lag (numeric) lag phase in time units
 #' @param t (numeric) discrete time points
 #' 
-#' @return (numeric) vector of modeled biomass corresponding to input time points
+#' @return (numeric) vector of modeled log10 biomass corresponding to input time points
+#' 
+#' @examples
+#' 
+#' # simulate growth according to the Baranyi growth model
+#' # for a growth period of 100 hours
+#' biomass <- baranyi_fun(
+#'   LOG10N0 = -1, LOG10Nmax = 1,
+#'   mumax = 0.1, lag = 10, t = 0:100)
+#' 
+#' # plot time versus biomass
+#' plot(0:100, biomass)
 #' 
 #' @export
 # ------------------------------------------------------------------------------
@@ -23,7 +34,7 @@ baranyi_fun <- function(LOG10N0, LOG10Nmax, mumax, lag, t) {
 
 #' Modified Gompertz growth model
 #' 
-#' Selection of growth models
+#' Simulate growth according to the Gompertz modified growth model
 #' 
 #' @param LOG10N0 (numeric) log 10 initial biomass density
 #' @param LOG10Nmax (numeric) log 10 maximum biomass density
@@ -31,7 +42,18 @@ baranyi_fun <- function(LOG10N0, LOG10Nmax, mumax, lag, t) {
 #' @param lag (numeric) lag phase in time units
 #' @param t (numeric) discrete time points
 #' 
-#' @return (numeric) vector of modeled biomass corresponding to input time points
+#' @return (numeric) vector of modeled log10 biomass corresponding to input time points
+#' 
+#' @examples
+#' 
+#' # simulate growth according to the Gompertz modified growth model
+#' # for a growth period of 100 hours
+#' biomass <- gompertzm_fun(
+#'   LOG10N0 = -1, LOG10Nmax = 1,
+#'   mumax = 0.1, lag = 10, t = 0:100)
+#' 
+#' # plot time versus biomass
+#' plot(0:100, biomass)
 #' 
 #' @export
 # ------------------------------------------------------------------------------
@@ -39,18 +61,3 @@ gompertzm_fun <- function(LOG10N0, LOG10Nmax, mumax, lag, t) {
   LOG10N0 + (LOG10Nmax - LOG10N0) * 
   exp(-exp(mumax * exp(1) * (lag - t)/((LOG10Nmax - LOG10N0) * log(10)) + 1))
 }
-
-#' Optical density conversion of plate reader to photometer measurements (OD 600 nm)
-#' 
-#' Selection of growth models
-#' 
-#' @param OD optical density measurements in plate reader
-#' 
-#' @return corrected optical density as obtained in photometer
-#' 
-#' @export
-# ------------------------------------------------------------------------------
-
-# OD600-correction function for plate reader measurements
-# Based on dilution series in 130117_PlateReader, where linearity of photometer and plate reader was compared
-OD_corr <- function(OD) {2^((log2(OD)-0.3667669)/0.8613216+0.9411063)}
