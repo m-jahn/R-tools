@@ -1,7 +1,7 @@
 #' Apply normalization based on different published methods
 #' 
 #' This function is a wrapper applying different normalization functions from
-#' other packages, such as limma, justvsm and preprocesscore, see details.
+#' other packages, such as limma, vsn and preprocesscore, see details.
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom dplyr bind_cols
@@ -90,11 +90,11 @@ apply_norm <- function(
   } else if (norm_function == "justvsn") {
       
     if (is.null(ref_cols)) {
-      data_norm <- justvsn(as.matrix(data[sample_cols])) %>% 
+      data_norm <- vsn::justvsn(as.matrix(data[sample_cols])) %>% 
         apply(2, function(x) 2^x)
     } else {
-      data_norm <- justvsn(as.matrix(data[sample_cols]), 
-        reference = vsn2(as.matrix(data[ref_cols]))) %>% 
+      data_norm <- vsn::justvsn(as.matrix(data[sample_cols]), 
+        reference = vsn::vsn2(as.matrix(data[ref_cols]))) %>% 
         apply(2, function(x) 2^x)
     }
       

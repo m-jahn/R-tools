@@ -5,7 +5,9 @@
 #' input a data frame with three specific columns: cluster numbers, Gene IDs, 
 #' and GO terms. Alternatively, these can also be supplied as three individual 
 #' lists.
-#'  
+#' 
+#' @importFrom methods new
+#' 
 #' @param df an (optional) data.frame with the three columns named as specified below (`GeneID`, 
 #'   `Gene.ontology.IDs`, `cluster`)
 #' @param GeneID (character) The column containing gene IDs, alternatively a vector

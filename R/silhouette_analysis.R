@@ -10,8 +10,12 @@
 #' @importFrom dendextend is.hclust
 #' @importFrom plyr ldply
 #' @importFrom lattice xyplot
+#' @importFrom lattice panel.grid
+#' @importFrom lattice panel.xyplot
+#' @importFrom latticeExtra panel.ablineq
 #' @importFrom stats cor
 #' @importFrom stats kmeans
+#' @importFrom grDevices grey
 #' 
 #' @param mat (numeric matrix) data matrix that clustering was performed on 
 #'   (or will be performed using k-means clustering)
@@ -101,18 +105,18 @@ silhouette_analysis <- function(
   #as.numeric(clus.sizes.Freq)
   plot.clusters <- xyplot(clus.avg.widths ~ as.numeric(clus.sizes.cl)
       | factor(n_clusters), dat,
-    par.settings = custom.lattice, as.table = TRUE, border = FALSE,
+    as.table = TRUE, border = FALSE,
     xlab = "cluster elements", ylab = "silhouette width",
     panel = function(x, y, ...) {
       panel.grid(h = -1, v = -1, col = grey(0.9))
-      panel.barplot(x, y, ewidth = 0.5, ...)
+      panel.xyplot(x, y, ...)
       panel.ablineq(h = mean(y), lty = 2, col = grey(0.3), fontfamily = "FreeSans", pos = 3)
     }
   )
   
   # and plot summary
   plot.summary <- xyplot(unique(dat$avg.width) ~ unique(dat$n_clusters),
-    par.settings = custom.lattice, as.table = TRUE,
+    as.table = TRUE,
     type = c("p", "l"), pch = 19, col = grey(0.3),
     xlab = "number of clusters", ylab = "average silhouette width",
     panel = function(x, y, ...) {

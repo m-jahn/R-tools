@@ -2,6 +2,12 @@ language: r
 cache: packages
 warnings_are_errors: false
 
+bioc_packages:
+  - limma
+  - preprocessCore
+  - vsn
+  - topGO
+
 notifications:
   email:
     on_success: change

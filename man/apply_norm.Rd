@@ -27,7 +27,7 @@ a normalized data frame
 }
 \description{
 This function is a wrapper applying different normalization functions from
-other packages, such as limma, justvsm and preprocesscore, see details.
+other packages, such as limma, vsn and preprocesscore, see details.
 }
 \details{
 This function provides several normalization functions to re-scale the peptide

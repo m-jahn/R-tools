@@ -7,6 +7,7 @@
 #' them up to protein abundances.
 #' 
 #' @importFrom dplyr %>%
+#' @importFrom dplyr mutate
 #' @importFrom dplyr summarise
 #' @importFrom dplyr mutate_at
 #' @importFrom dplyr filter_at
