@@ -91,12 +91,6 @@ df <- data.frame(
 get_topgo(df, selected.cluster = 1, topNodes = 5)
 
 ## ---- message = FALSE, warning = FALSE----------------------------------------
-# this function requires some additional packlages
-library(lattice)
-library(latticeExtra)
-library(cluster)
-library(dplyr)
-
 # generate a random matrix that we use for clustering with the 
 # format of 100 rows (e.g. determined gene expression) and 10 
 # columns (conditions)
@@ -111,8 +105,8 @@ plot(clust)
 sil_result <- silhouette_analysis(mat, n_clusters = 2:10)
 
 # plot results
-print(sil_result$plot.clusters, split = c(1,1,2,1), more = TRUE)
-print(sil_result$plot.summary, split = c(2,1,2,1))
+print(sil_result$plot_clusters, split = c(1,1,2,1), more = TRUE)
+print(sil_result$plot_summary, split = c(2,1,2,1))
 
 ## ---- fig.width = 4, fig.height = 3-------------------------------------------
 # simulate growth according to the Baranyi growth model

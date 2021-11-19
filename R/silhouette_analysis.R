@@ -1,44 +1,50 @@
 #' Wrapper function to perform silhouette analysis on different cluster numbers
 #' 
-#' Silhouette analysis shows the clusters that have explanatory power.
-#' That includes clusters that are best separated from the neighbours 
-#' resulting in a higher average silhoutte width (the decisive metric to 
-#' judge optimal cluster number). This function applies the silhouette analysis iteratively for a vector of 
-#' different cluster numbers and stores results in a list.
+#' Silhouette analysis identifies the number of clusters that have highest
+#' explanatory power. It tries to answer the question of how many different
+#' clusters are required to optimally separate all clusters from their neighbors.
+#' Good cluster separation results in a higher average silhouette width, the 
+#' decisive metric to judge cluster number. This function applies silhouette
+#' analysis iteratively for a vector of different cluster numbers and stores
+#' the result in a list.
 #' 
 #' @importFrom cluster silhouette
 #' @importFrom dendextend is.hclust
-#' @importFrom plyr ldply
-#' @importFrom lattice xyplot
-#' @importFrom lattice panel.grid
-#' @importFrom lattice panel.xyplot
-#' @importFrom latticeExtra panel.ablineq
 #' @importFrom stats cor
 #' @importFrom stats kmeans
 #' @importFrom grDevices grey
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr rename_with
+#' @importFrom dplyr distinct
+#' @importFrom dplyr select
+#' @importFrom dplyr all_of
+#' @importFrom lattice xyplot
+#' @importFrom lattice panel.xyplot
+#' @importFrom lattice panel.grid
+#' @importFrom lattice panel.abline
+#' @importFrom latticeExtra panel.ablineq
+#' @importFrom latticeExtra ggplot2like
+#' @importFrom latticeExtra panel.smoother
 #' 
 #' @param mat (numeric matrix) data matrix that clustering was performed on 
 #'   (or will be performed using k-means clustering)
 #' @param cluster_object (hclust) a cluster object obtained from running hclust(), optional
 #' @param n_clusters (numeric) a vector of cluster numbers for which silhouette analysis is
 #'   performed
+#' @param n_repeats (numeric) scalar indicating the number of random permutations to perform
+#'   analysis (default: 5)
+#' @param plot (logical) if the function should return a list of summary plots also.
+#'   Default is TRUE
 #' 
 #' @details Prerequesite for silhouette analysis is a cluster object that can be obtained
 #'   by e.g. running hclust(d = dist(mat), method = "ward.D"). The alternative is to supply
-#'   no cluster object, then the functions performs a kmeans() clustering for the indicated
+#'   no cluster object, then the function performs a kmeans() clustering for the indicated
 #'   number of clusters.
 #' 
 #' @return a list with three objects, silhouette analysis data, and two summary plots
 #'   obtained using lattice graphics.
 #' 
 #' @examples
-#' 
-#' # this function requires some additional packlages
-#' library(lattice)
-#' library(latticeExtra)
-#' library(cluster)
-#' library(dplyr)
-#' 
 #' # generate a random matrix that we use for clustering with the 
 #' # format of 100 rows (e.g. determined gene expression) and 10 
 #' # columns (conditions)
@@ -53,15 +59,17 @@
 #' sil_result <- silhouette_analysis(mat, n_clusters = 2:10)
 #' 
 #' # plot results
-#' print(sil_result$plot.clusters, split = c(1,1,2,1), more = TRUE)
-#' print(sil_result$plot.summary, split = c(2,1,2,1))
+#' print(sil_result$plot_clusters, split = c(1,1,2,1), more = TRUE)
+#' print(sil_result$plot_summary, split = c(2,1,2,1))
 #' 
 #' @export
 # ------------------------------------------------------------------------------
 silhouette_analysis <- function(
-  mat, 
+  mat,
   cluster_object = NULL,
-  n_clusters
+  n_clusters = 2:10,
+  n_repeats = 5,
+  plot = TRUE
 ) {
   
   # check cluster_object properties
@@ -76,60 +84,82 @@ silhouette_analysis <- function(
   if (any(n_clusters <= 1))
     stop("values of 1 or lower are not allowed for n_clusters\n")
   
+  # all combinations of cluster numbers and repeats
+  variables <- expand.grid(n_clusters, 1:n_repeats)
+  
   # loop through silhouette function
-  dat <- lapply(n_clusters, function(x) {
-    
-    # if no cluster_object is provided use kmeans clustering
-    if (is.null(cluster_object)) {
-      kmeans_cluster <- kmeans(mat, centers = x, iter.max = 100)$cluster
-      si.summary <- silhouette(as.numeric(kmeans_cluster), dist(mat)) %>% summary
-    
-    # else use the provided hclust object
-    } else {
-      si.summary <- silhouette(
-        as.numeric(cutree(cluster_object, k = x)),
-        dist(mat)
-      ) %>% summary
-    }
-    
-    si.summary$n_clusters <- rep(x, x)
-    si.summary[c("n_clusters", 
-      "clus.avg.widths", 
-      "avg.width", 
-      "clus.sizes")] %>% 
-    as.data.frame
-    
-  }) %>% plyr::ldply()
-  
-  # plot single cluster averages
-  #as.numeric(clus.sizes.Freq)
-  plot.clusters <- xyplot(clus.avg.widths ~ as.numeric(clus.sizes.cl)
-      | factor(n_clusters), dat,
-    as.table = TRUE, border = FALSE,
-    xlab = "cluster elements", ylab = "silhouette width",
-    panel = function(x, y, ...) {
-      panel.grid(h = -1, v = -1, col = grey(0.9))
-      panel.xyplot(x, y, ...)
-      panel.ablineq(h = mean(y), lty = 2, col = grey(0.3), fontfamily = "FreeSans", pos = 3)
+  df <- mapply(
+    n = variables$Var1,
+    r = variables$Var2,
+    SIMPLIFY = FALSE,
+    FUN = function(n, r) {
+      
+      # if no cluster_object is provided use kmeans clustering
+      if (is.null(cluster_object)) {
+        kmeans_cluster <- kmeans(mat, centers = n, iter.max = 100)$cluster
+        si.summary <- summary(silhouette(as.numeric(kmeans_cluster), dist(mat)))
+      
+      # else use the provided hclust object
+      } else {
+        si.summary <- silhouette(
+          as.numeric(cutree(cluster_object, k = n)),
+          dist(mat)
+        ) %>% summary
+      }
+      
+      data.frame(
+        n_cluster = rep(n, n),
+        n_repeat = rep(r, n),
+        avg_width = rep(si.summary$avg.width, n),
+        clus_sizes = si.summary$clus.sizes,
+        clus_avg_widths = si.summary$clus.avg.widths
+      )
     }
   )
   
-  # and plot summary
-  plot.summary <- xyplot(unique(dat$avg.width) ~ unique(dat$n_clusters),
-    as.table = TRUE,
-    type = c("p", "l"), pch = 19, col = grey(0.3),
-    xlab = "number of clusters", ylab = "average silhouette width",
-    panel = function(x, y, ...) {
-      panel.grid(h = -1, v = -1, col = grey(0.9))
-      panel.xyplot(x, y, ...)
-    }
-  )
+  # merge list of data frames in one df
+  df <- bind_rows(df)
+  df <- rename_with(df, .fn = function(x) gsub("\\.", "_", x))
+  
+  if (plot) {
+    # plot single cluster averages
+    plot_clusters <- lattice::xyplot(clus_avg_widths ~ as.numeric(clus_sizes_cl) |
+        factor(n_cluster), df, groups = get("n_repeat"),
+      par.settings = latticeExtra::ggplot2like(),
+      as.table = TRUE, border = FALSE, between = list(x = 0.5, y = 0.5),
+      xlab = "individual cluster", ylab = "silhouette width",
+      scales = list(alternating = FALSE),
+      panel = function(x, y, ...) {
+        lattice::panel.grid(h = -1, v = -1, col = "white")
+        lattice::panel.xyplot(x, y, ...)
+        latticeExtra::panel.ablineq(h = mean(y), lty = 2, col = grey(0.3),
+          fontfamily = "FreeSans", pos = 3, ...)
+      }
+    )
+  
+    # and plot summary
+    df_summary <- dplyr::distinct(
+      dplyr::select(df, dplyr::all_of(c("n_cluster", "n_repeat", "avg_width"))))
+    
+    plot_summary <- lattice::xyplot(avg_width ~ n_cluster, df_summary,
+      par.settings = latticeExtra::ggplot2like(),
+      cex = 0.8, lwd = 1.5,
+      xlab = "number of clusters", ylab = "average silhouette width",
+      panel = function(x, y, ...) {
+        lattice::panel.grid(h = -1, v = -1, col = "white")
+        lattice::panel.xyplot(x, y, ...)
+        latticeExtra::panel.smoother(x, y, ...)
+        lattice::panel.abline(v = which.max(tapply(y, x, mean)),
+          lty = 2, col = grey(0.3), ...)
+      }
+    )
+  }
   
   # return list with results
-  cat("Silhouette analysis finished for clusters", min(n_clusters), "to", max(n_clusters))
-  list(
-    dat = dat,
-    plot.clusters = plot.clusters,
-    plot.summary = plot.summary
-  )
+  result <- list(data = df)
+  if (plot) {
+    result$plot_clusters = plot_clusters
+    result$plot_summary = plot_summary
+  }
+  return(result)
 }

@@ -4,7 +4,13 @@
 \alias{silhouette_analysis}
 \title{Wrapper function to perform silhouette analysis on different cluster numbers}
 \usage{
-silhouette_analysis(mat, cluster_object = NULL, n_clusters)
+silhouette_analysis(
+  mat,
+  cluster_object = NULL,
+  n_clusters = 2:10,
+  n_repeats = 5,
+  plot = TRUE
+)
 }
 \arguments{
 \item{mat}{(numeric matrix) data matrix that clustering was performed on 
@@ -14,32 +20,33 @@ silhouette_analysis(mat, cluster_object = NULL, n_clusters)
 
 \item{n_clusters}{(numeric) a vector of cluster numbers for which silhouette analysis is
 performed}
+
+\item{n_repeats}{(numeric) scalar indicating the number of random permutations to perform
+analysis (default: 5)}
+
+\item{plot}{(logical) if the function should return a list of summary plots also.
+Default is TRUE}
 }
 \value{
 a list with three objects, silhouette analysis data, and two summary plots
   obtained using lattice graphics.
 }
 \description{
-Silhouette analysis shows the clusters that have explanatory power.
-That includes clusters that are best separated from the neighbours 
-resulting in a higher average silhoutte width (the decisive metric to 
-judge optimal cluster number). This function applies the silhouette analysis iteratively for a vector of 
-different cluster numbers and stores results in a list.
+Silhouette analysis identifies the number of clusters that have highest
+explanatory power. It tries to answer the question of how many different
+clusters are required to optimally separate all clusters from their neighbors.
+Good cluster separation results in a higher average silhouette width, the 
+decisive metric to judge cluster number. This function applies silhouette
+analysis iteratively for a vector of different cluster numbers and stores
+the result in a list.
 }
 \details{
 Prerequesite for silhouette analysis is a cluster object that can be obtained
   by e.g. running hclust(d = dist(mat), method = "ward.D"). The alternative is to supply
-  no cluster object, then the functions performs a kmeans() clustering for the indicated
+  no cluster object, then the function performs a kmeans() clustering for the indicated
   number of clusters.
 }
 \examples{
-
-# this function requires some additional packlages
-library(lattice)
-library(latticeExtra)
-library(cluster)
-library(dplyr)
-
 # generate a random matrix that we use for clustering with the 
 # format of 100 rows (e.g. determined gene expression) and 10 
 # columns (conditions)
@@ -54,7 +61,7 @@ plot(clust)
 sil_result <- silhouette_analysis(mat, n_clusters = 2:10)
 
 # plot results
-print(sil_result$plot.clusters, split = c(1,1,2,1), more = TRUE)
-print(sil_result$plot.summary, split = c(2,1,2,1))
+print(sil_result$plot_clusters, split = c(1,1,2,1), more = TRUE)
+print(sil_result$plot_summary, split = c(2,1,2,1))
 
 }

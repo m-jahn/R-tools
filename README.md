@@ -1,7 +1,7 @@
 Rtools
 ================
 Michael Jahn,
-2020-04-24
+2021-11-19
 
 <!-- badges start -->
 
@@ -13,7 +13,7 @@ Status](https://travis-ci.com/m-jahn/R-tools.svg?branch=master)](https://travis-
 commit](https://img.shields.io/github/last-commit/m-jahn/R-tools)
 <!-- badges end -->
 
------
+------------------------------------------------------------------------
 
 Utility functions for bioinformatics work
 
@@ -76,16 +76,16 @@ aggregate_pep(
 )
 ```
 
-    ## # A tibble: 7 x 5
+    ## # A tibble: 7 × 5
     ##   protein n_peptides   ab1   ab2   ab3
     ##   <chr>        <int> <dbl> <dbl> <dbl>
-    ## 1 A                1  37    80    23  
-    ## 2 B                1  59    18     8  
-    ## 3 C                3 136.   42.5 125. 
-    ## 4 D                2  58.3  33.5  38.8
-    ## 5 E                2  77.3  52   119. 
-    ## 6 F                1  90    56     9  
-    ## 7 G                1  91    90    69
+    ## 1 A                1  51    58    29  
+    ## 2 B                1  97    47    64  
+    ## 3 C                3  91.8  34.5  90.2
+    ## 4 D                2  33.8   7.5  23.2
+    ## 5 E                2  60.3  19    43.7
+    ## 6 F                1  39    37    43  
+    ## 7 G                1  59    54    98
 
 ### apply\_norm
 
@@ -118,12 +118,12 @@ df_norm <- apply_norm(
 print(df_norm)
 ```
 
-    ##   protein    cond1    cond2      cond3
-    ## 1       A 59.09840 10.77315  13.608184
-    ## 2       B 27.21637 27.21637  27.216368
-    ## 3       C 18.66265 22.68031   2.268031
-    ## 4       D 56.76557 49.89668 142.885934
-    ## 5       E 24.10593 41.95857 145.153965
+    ##   protein    cond1     cond2    cond3
+    ## 1       A 43.72985 57.077524 40.86232
+    ## 2       B 71.68828 40.862318 75.27269
+    ## 3       C 27.24155 20.106855 21.50648
+    ## 4       D 10.75324 60.320565 32.25972
+    ## 5       E 40.86232  7.783299 77.42334
 
 ``` r
 # Has the normalization worked? We can compare column medians
@@ -132,14 +132,14 @@ apply(df[2:4], 2, median)
 ```
 
     ## cond1 cond2 cond3 
-    ##    35    48    12
+    ##    57    63    19
 
 ``` r
 apply(df_norm[2:4], 2, median)
 ```
 
     ##    cond1    cond2    cond3 
-    ## 27.21637 27.21637 27.21637
+    ## 40.86232 40.86232 40.86232
 
 ### get\_topgo
 
@@ -183,18 +183,18 @@ df <- data.frame(
 get_topgo(df, selected.cluster = 1, topNodes = 5)
 ```
 
-    ##        GO.ID                                        Term Annotated Significant
-    ## 1 GO:0006807         nitrogen compound metabolic process        17          11
-    ## 2 GO:0006725 cellular aromatic compound metabolic pro...        16          10
-    ## 3 GO:0034641 cellular nitrogen compound metabolic pro...        16          10
-    ## 4 GO:0044271 cellular nitrogen compound biosynthetic ...        16          10
-    ## 5 GO:0046483               heterocycle metabolic process        16          10
-    ##   Expected classicFisher weightedFisher elimFisher              SigGenes
-    ## 1      8.5         0.048           1.00      0.048 A,B,D,F,G,H,I,J,K,L,M
-    ## 2      8.0         0.113           1.00      0.113   A,B,F,G,H,I,J,K,L,M
-    ## 3      8.0         0.113           1.00      0.113   A,B,F,G,H,I,J,K,L,M
-    ## 4      8.0         0.113           0.58      0.113   A,B,F,G,H,I,J,K,L,M
-    ## 5      8.0         0.113           1.00      0.113   A,B,F,G,H,I,J,K,L,M
+    ##        GO.ID                                   Term Annotated Significant
+    ## 1 GO:0009058                   biosynthetic process        23          13
+    ## 2 GO:0016116           carotenoid metabolic process         3           3
+    ## 3 GO:1901576 organic substance biosynthetic process        23          13
+    ## 4 GO:0006886        intracellular protein transport         5           4
+    ## 5 GO:0034613          cellular protein localization         5           4
+    ##   Expected classicFisher weightedFisher elimFisher                  SigGenes
+    ## 1     11.5          0.11           0.20       0.11 A,B,C,D,E,F,G,H,I,J,K,L,M
+    ## 2      1.5          0.11           0.11       0.11                     B,E,H
+    ## 3     11.5          0.11           1.00       0.11 A,B,C,D,E,F,G,H,I,J,K,L,M
+    ## 4      2.5          0.16           0.69       0.16                   E,F,H,I
+    ## 5      2.5          0.16           1.00       0.16                   E,F,H,I
 
 ### silhouette\_analysis
 
@@ -207,12 +207,6 @@ silhouette analysis iteratively for a vector of different cluster
 numbers and stores results in a list.
 
 ``` r
-# this function requires some additional packlages
-library(lattice)
-library(latticeExtra)
-library(cluster)
-library(dplyr)
-
 # generate a random matrix that we use for clustering with the 
 # format of 100 rows (e.g. determined gene expression) and 10 
 # columns (conditions)
@@ -229,14 +223,10 @@ plot(clust)
 ``` r
 # perform silhouette analysis for 2 to 10 different clusters
 sil_result <- silhouette_analysis(mat, n_clusters = 2:10)
-```
 
-    ## Silhouette analysis finished for clusters 2 to 10
-
-``` r
 # plot results
-print(sil_result$plot.clusters, split = c(1,1,2,1), more = TRUE)
-print(sil_result$plot.summary, split = c(2,1,2,1))
+print(sil_result$plot_clusters, split = c(1,1,2,1), more = TRUE)
+print(sil_result$plot_summary, split = c(2,1,2,1))
 ```
 
 ![](vignettes/README_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
@@ -249,11 +239,11 @@ The function take no other argument than a data frame. Changes that need
 to be made to the Kegg XML file before applying the function,
 e.g. simply using a text editor:
 
-  - replace double spaces ’ ’ by tabs ’
-  - remove first lines until regular content begins
-  - possibly add some trailing tabs or commas to end of first line (4 to
-    5) so that read.table knows how many columns to expect
-  - read raw data frame into R using read.table(“/path/to/file”, fill =
+-   replace double spaces ’ ’ by tabs ’
+-   remove first lines until regular content begins
+-   possibly add some trailing tabs or commas to end of first line (4
+    to 5) so that read.table knows how many columns to expect
+-   read raw data frame into R using read.table(“/path/to/file”, fill =
     TRUE, sep = “, row.names = NULL, stringsAsFactors = FALSE, quote
     =”")
 
