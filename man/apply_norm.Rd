@@ -57,7 +57,9 @@ df <- data.frame(
 
 # normalize protein abundance to obtain identical 
 # median expression of each column (condition)
-# For this function we need to load one extra package
+# For this function we need to load one extra BioConductor
+# package
+\dontrun{
 library(limma)
 
 df_norm <- apply_norm(
@@ -74,5 +76,6 @@ print(df_norm)
 # for original and normalized data
 apply(df[2:4], 2, median)
 apply(df_norm[2:4], 2, median)
+}
 
 }
