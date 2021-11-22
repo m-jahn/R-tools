@@ -1,16 +1,17 @@
 Rtools
 ================
 Michael Jahn,
-2021-11-19
+2021-11-22
 
 <!-- badges start -->
 
-[![Build
-Status](https://travis-ci.com/m-jahn/R-tools.svg?branch=master)](https://travis-ci.com/m-jahn/R-tools)
+[![R build
+status](https://github.com/m-jahn/R-tools/workflows/R-CMD-check/badge.svg)](https://github.com/m-jahn/R-tools/actions)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/m-jahn)
 ![GitHub issues](https://img.shields.io/github/issues/m-jahn/R-tools)
 ![GitHub last
 commit](https://img.shields.io/github/last-commit/m-jahn/R-tools)
+![Platform](https://img.shields.io/badge/platform-all-green)
 <!-- badges end -->
 
 ------------------------------------------------------------------------
@@ -79,13 +80,13 @@ aggregate_pep(
     ## # A tibble: 7 × 5
     ##   protein n_peptides   ab1   ab2   ab3
     ##   <chr>        <int> <dbl> <dbl> <dbl>
-    ## 1 A                1  51    58    29  
-    ## 2 B                1  97    47    64  
-    ## 3 C                3  91.8  34.5  90.2
-    ## 4 D                2  33.8   7.5  23.2
-    ## 5 E                2  60.3  19    43.7
-    ## 6 F                1  39    37    43  
-    ## 7 G                1  59    54    98
+    ## 1 A                1  64    20      75
+    ## 2 B                1  19    85      24
+    ## 3 C                3 153.   42.7   100
+    ## 4 D                2  57.3  16.7    46
+    ## 5 E                2  36.3 106.    124
+    ## 6 F                1  70    79      29
+    ## 7 G                1  54    11      28
 
 ### apply\_norm
 
@@ -118,12 +119,12 @@ df_norm <- apply_norm(
 print(df_norm)
 ```
 
-    ##   protein    cond1     cond2    cond3
-    ## 1       A 43.72985 57.077524 40.86232
-    ## 2       B 71.68828 40.862318 75.27269
-    ## 3       C 27.24155 20.106855 21.50648
-    ## 4       D 10.75324 60.320565 32.25972
-    ## 5       E 40.86232  7.783299 77.42334
+    ##   protein    cond1    cond2     cond3
+    ## 1       A 82.31873 21.19717 31.463266
+    ## 2       B 33.14131 90.31836 80.180582
+    ## 3       C 89.80225 85.71028  8.119553
+    ## 4       D 72.69706 56.21857 85.255302
+    ## 5       E 80.18058 80.18058 84.240358
 
 ``` r
 # Has the normalization worked? We can compare column medians
@@ -132,14 +133,14 @@ apply(df[2:4], 2, median)
 ```
 
     ## cond1 cond2 cond3 
-    ##    57    63    19
+    ##    75    87    79
 
 ``` r
 apply(df_norm[2:4], 2, median)
 ```
 
     ##    cond1    cond2    cond3 
-    ## 40.86232 40.86232 40.86232
+    ## 80.18058 80.18058 80.18058
 
 ### get\_topgo
 
@@ -183,18 +184,18 @@ df <- data.frame(
 get_topgo(df, selected.cluster = 1, topNodes = 5)
 ```
 
-    ##        GO.ID                                   Term Annotated Significant
-    ## 1 GO:0009058                   biosynthetic process        23          13
-    ## 2 GO:0016116           carotenoid metabolic process         3           3
-    ## 3 GO:1901576 organic substance biosynthetic process        23          13
-    ## 4 GO:0006886        intracellular protein transport         5           4
-    ## 5 GO:0034613          cellular protein localization         5           4
-    ##   Expected classicFisher weightedFisher elimFisher                  SigGenes
-    ## 1     11.5          0.11           0.20       0.11 A,B,C,D,E,F,G,H,I,J,K,L,M
-    ## 2      1.5          0.11           0.11       0.11                     B,E,H
-    ## 3     11.5          0.11           1.00       0.11 A,B,C,D,E,F,G,H,I,J,K,L,M
-    ## 4      2.5          0.16           0.69       0.16                   E,F,H,I
-    ## 5      2.5          0.16           1.00       0.16                   E,F,H,I
+    ##        GO.ID                                        Term Annotated Significant
+    ## 1 GO:0006778 porphyrin-containing compound metabolic ...         6           5
+    ## 2 GO:0033013              tetrapyrrole metabolic process         6           5
+    ## 3 GO:0042440                   pigment metabolic process         6           5
+    ## 4 GO:0046148                pigment biosynthetic process         6           5
+    ## 5 GO:0006807         nitrogen compound metabolic process        18          11
+    ##   Expected classicFisher weightedFisher elimFisher              SigGenes
+    ## 1        3          0.08           1.00       0.08             B,C,E,F,H
+    ## 2        3          0.08           1.00       0.08             B,C,E,F,H
+    ## 3        3          0.08           1.00       0.08             A,B,C,F,H
+    ## 4        3          0.08           0.08       0.08             A,B,C,F,H
+    ## 5        9          0.10           1.00       0.10 B,C,D,E,F,H,I,J,K,L,M
 
 ### silhouette\_analysis
 

@@ -11,10 +11,11 @@ vignette: >
 ---
 
 <!-- badges start -->
-[![Build Status](https://travis-ci.com/m-jahn/R-tools.svg?branch=master)](https://travis-ci.com/m-jahn/R-tools)
+[![R build status](https://github.com/m-jahn/R-tools/workflows/R-CMD-check/badge.svg)](https://github.com/m-jahn/R-tools/actions)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/m-jahn)
 ![GitHub issues](https://img.shields.io/github/issues/m-jahn/R-tools)
 ![GitHub last commit](https://img.shields.io/github/last-commit/m-jahn/R-tools)
+![Platform](https://img.shields.io/badge/platform-all-green)
 <!-- badges end -->
 
 ***
