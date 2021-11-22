@@ -2,6 +2,9 @@
 #  require(devtools)
 #  devtools::install_github("https://github.com/m-jahn/R-tools")
 
+## ---- echo = FALSE------------------------------------------------------------
+set.seed(123)
+
 ## ---- message = FALSE, warning = FALSE----------------------------------------
 # load additional dependencies
 library(Rtools)
@@ -38,14 +41,17 @@ df <- data.frame(
   cond3 = sample(1:100, 5)
 )
 
-# normalize protein abundance to obtain identical 
-# median expression of each column (condition)
-# For this function we need to load one extra package
-library(limma)
+# normalize protein abundance to obtain identical median;
+# function borrowed from limma::normalizeMedianValues()
+median_norm <- function(x) {
+  cmed <- log(apply(x, 2, median, na.rm = TRUE))
+  cmed <- exp(cmed - mean(cmed))
+  t(t(x)/cmed)
+}
 
 df_norm <- apply_norm(
   df, 
-  norm_function = "normalizeMedianValues", 
+  norm_function = median_norm, 
   sample_cols = 2:ncol(df),
   ref_cols = NULL
 )

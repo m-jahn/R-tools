@@ -1,7 +1,10 @@
 #' Apply normalization based on different published methods
 #' 
 #' This function is a wrapper applying different normalization functions from
-#' other packages, such as limma, vsn and preprocesscore, see details.
+#' other packages, such as `limma`, `justvsm` and `preprocesscore`.
+#' These are not imported automatically but have to be installed separately.
+#' Alternatively, it will apply any custom normalization functions that is
+#' passed to the `norm_function` argument.
 #' 
 #' @importFrom dplyr %>%
 #' @importFrom dplyr bind_cols
@@ -49,16 +52,17 @@
 #'   cond3 = sample(1:100, 5)
 #' )
 #' 
-#' # normalize protein abundance to obtain identical 
-#' # median expression of each column (condition)
-#' # For this function we need to load one extra BioConductor
-#' # package
-#' \dontrun{
-#' library(limma)
+#' # normalize protein abundance to obtain identical median;
+#' # function borrowed from limma::normalizeMedianValues()
+#' median_norm <- function(x) {
+#'   cmed <- log(apply(x, 2, median, na.rm = TRUE))
+#'   cmed <- exp(cmed - mean(cmed))
+#'   t(t(x)/cmed)
+#' }
 #' 
 #' df_norm <- apply_norm(
 #'   df, 
-#'   norm_function = "normalizeMedianValues", 
+#'   norm_function = median_norm, 
 #'   sample_cols = 2:ncol(df),
 #'   ref_cols = NULL
 #' )
@@ -70,47 +74,48 @@
 #' # for original and normalized data
 #' apply(df[2:4], 2, median)
 #' apply(df_norm[2:4], 2, median)
-#' }
 #' 
 #' @export
-# ------------------------------------------------------------------------------
 apply_norm <- function(
   data, 
-  norm_function = "normalizeMedianValues", 
+  norm_function = "none", 
   sample_cols = 1:ncol(data),
   ref_cols = NULL
 ) {
   
-  if (norm_function == "normalize.quantiles.in.blocks") {
+  if (is.character(norm_function)) {
     
-    # this function requires blocks. We define an arbitrary number of blocks
-    # from the sorted median intensity of all samples
-    blocks <- apply(data[sample_cols], 1, function(x) median(x, na.rm = TRUE)) %>% 
-      quantcut(q = 20)
-    data_norm <- data[sample_cols] %>% as.matrix %>%
-      preprocessCore::normalize.quantiles.in.blocks(blocks)
-    
-  } else if (norm_function == "justvsn") {
+    if (norm_function == "normalize.quantiles.in.blocks") {
       
-    if (is.null(ref_cols)) {
-      data_norm <- vsn::justvsn(as.matrix(data[sample_cols])) %>% 
-        apply(2, function(x) 2^x)
-    } else {
-      data_norm <- vsn::justvsn(as.matrix(data[sample_cols]), 
-        reference = vsn::vsn2(as.matrix(data[ref_cols]))) %>% 
-        apply(2, function(x) 2^x)
+      # this function requires blocks. We define an arbitrary number of blocks
+      # from the sorted median intensity of all samples
+      blocks <- apply(data[sample_cols], 1, function(x) median(x, na.rm = TRUE)) %>% 
+        quantcut(q = 20)
+      data_norm <- data[sample_cols] %>% as.matrix %>%
+        preprocessCore::normalize.quantiles.in.blocks(blocks)
+      
+    } else if (norm_function == "justvsn") {
+        
+      if (is.null(ref_cols)) {
+        data_norm <- vsn::justvsn(as.matrix(data[sample_cols])) %>% 
+          apply(2, function(x) 2^x)
+      } else {
+        data_norm <- vsn::justvsn(as.matrix(data[sample_cols]), 
+          reference = vsn::vsn2(as.matrix(data[ref_cols]))) %>% 
+          apply(2, function(x) 2^x)
+      }
+        
+    } else if (norm_function == "none"){
+      data_norm <- data
     }
-      
-  } else if (norm_function != "none") {
-      
+    
+  } else if (is.function(norm_function)) {
     data_norm <- do.call(
-      get(norm_function), 
+      norm_function, 
       list(x = as.matrix(data[sample_cols]))
     )
-      
-  } else {
-    data_norm <- data
   }
+  
   # return normalized dataframe
   data_norm <- as.data.frame(data_norm) %>% setNames(colnames(data[sample_cols]))
   dplyr::bind_cols(data %>% dplyr::select(-sample_cols), data_norm)

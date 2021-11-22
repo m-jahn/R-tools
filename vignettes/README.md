@@ -226,7 +226,7 @@ clust <- hclust(dist(mat))
 plot(clust)
 ```
 
-![](vignettes/README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](/home/michael/Documents/SciLifeLab/Resources/R_projects/R-tools/vignettes/README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
 # perform silhouette analysis for 2 to 10 different clusters
@@ -237,7 +237,7 @@ print(sil_result$plot_clusters, split = c(1,1,2,1), more = TRUE)
 print(sil_result$plot_summary, split = c(2,1,2,1))
 ```
 
-![](vignettes/README_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+![](/home/michael/Documents/SciLifeLab/Resources/R_projects/R-tools/vignettes/README_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
 
 ### parse\_kegg\_brite
 
@@ -272,7 +272,7 @@ biomass <- baranyi_fun(
 plot(0:100, biomass)
 ```
 
-![](vignettes/README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](/home/michael/Documents/SciLifeLab/Resources/R_projects/R-tools/vignettes/README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ### gompertzm\_fun
 
@@ -289,4 +289,4 @@ biomass <- gompertzm_fun(
 plot(0:100, biomass)
 ```
 
-![](vignettes/README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](/home/michael/Documents/SciLifeLab/Resources/R_projects/R-tools/vignettes/README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->

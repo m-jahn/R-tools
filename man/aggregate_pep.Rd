@@ -67,7 +67,7 @@ df <- data.frame(
 )
 
 aggregate_pep(
-  data = df, 
+  data = df,
   sample_cols = c("ab1", "ab2", "ab3"),
   protein_col = "protein",
   peptide_col = "peptide",

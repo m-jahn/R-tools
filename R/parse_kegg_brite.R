@@ -4,6 +4,7 @@
 #' a regular data frame instead.
 #' 
 #' @importFrom tidyr separate
+#' @importFrom dplyr filter
 #' 
 #' @param data a data frame with 5 columns as input
 #' 
@@ -44,11 +45,11 @@ parse_kegg_brite <- function(data) {
   )
   
   # split protein column in IDs and trivial name
-  data <- tidyr::separate(data, Protein, c("Protein", "full_name"), sep="; ") %>%
-    tidyr::separate(data, Protein, c("Protein", "short_name"), sep=" ")
+  data <- tidyr::separate(data, .data[["Protein"]], c("Protein", "full_name"), sep="; ") %>%
+    tidyr::separate(data, .data[["Protein"]], c("Protein", "short_name"), sep=" ")
   
   # remove rows without proteins or exp values
-  data <- subset(data, Protein != "")
+  data <- filter(data, .data[["Protein"]] != "")
   
   # trim some filling material to more concise description
   data <- as.data.frame(

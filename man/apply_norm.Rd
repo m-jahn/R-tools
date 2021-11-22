@@ -6,7 +6,7 @@
 \usage{
 apply_norm(
   data,
-  norm_function = "normalizeMedianValues",
+  norm_function = "none",
   sample_cols = 1:ncol(data),
   ref_cols = NULL
 )
@@ -27,7 +27,10 @@ a normalized data frame
 }
 \description{
 This function is a wrapper applying different normalization functions from
-other packages, such as limma, vsn and preprocesscore, see details.
+other packages, such as `limma`, `justvsm` and `preprocesscore`.
+These are not imported automatically but have to be installed separately.
+Alternatively, it will apply any custom normalization functions that is
+passed to the `norm_function` argument.
 }
 \details{
 This function provides several normalization functions to re-scale the peptide
@@ -55,16 +58,17 @@ df <- data.frame(
   cond3 = sample(1:100, 5)
 )
 
-# normalize protein abundance to obtain identical 
-# median expression of each column (condition)
-# For this function we need to load one extra BioConductor
-# package
-\dontrun{
-library(limma)
+# normalize protein abundance to obtain identical median;
+# function borrowed from limma::normalizeMedianValues()
+median_norm <- function(x) {
+  cmed <- log(apply(x, 2, median, na.rm = TRUE))
+  cmed <- exp(cmed - mean(cmed))
+  t(t(x)/cmed)
+}
 
 df_norm <- apply_norm(
   df, 
-  norm_function = "normalizeMedianValues", 
+  norm_function = median_norm, 
   sample_cols = 2:ncol(df),
   ref_cols = NULL
 )
@@ -76,6 +80,5 @@ print(df_norm)
 # for original and normalized data
 apply(df[2:4], 2, median)
 apply(df_norm[2:4], 2, median)
-}
 
 }

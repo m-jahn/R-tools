@@ -44,6 +44,10 @@ Aggregate peptide abundances to protein abundances.
 
 Similar to the openMS module ProteinQuantifier, this function provides different methods to aggregate peptide intensities to their parent proteins. It is mainly intended for the use with (raw) Diffacto results, a table of peptide intensities and covariation scores (weights) that can be used to filter peptides before aggregating them up to protein abundances.
 
+```{r, echo = FALSE}
+set.seed(123)
+```
+
 ```{r, message = FALSE, warning = FALSE}
 # load additional dependencies
 library(Rtools)
@@ -76,7 +80,7 @@ aggregate_pep(
 
 ### apply_norm
 
-Apply normalization based on different published methods. This function is a wrapper applying different normalization functions from other packages, such as `limma`, `justvsm` and `preprocesscore`. These are not imported automatically but have to be installed separately.
+Apply normalization based on different published methods. This function is a wrapper applying different normalization functions from other packages, such as `limma`, `justvsm` and `preprocesscore`. These are not imported automatically but have to be installed separately. Alternatively, it will apply any custom normalization functions that is passed to the `norm_function` argument.
 
 ```{r, message = FALSE, warning = FALSE}
 df <- data.frame(
@@ -86,14 +90,17 @@ df <- data.frame(
   cond3 = sample(1:100, 5)
 )
 
-# normalize protein abundance to obtain identical 
-# median expression of each column (condition)
-# For this function we need to load one extra package
-library(limma)
+# normalize protein abundance to obtain identical median;
+# function borrowed from limma::normalizeMedianValues()
+median_norm <- function(x) {
+  cmed <- log(apply(x, 2, median, na.rm = TRUE))
+  cmed <- exp(cmed - mean(cmed))
+  t(t(x)/cmed)
+}
 
 df_norm <- apply_norm(
   df, 
-  norm_function = "normalizeMedianValues", 
+  norm_function = median_norm, 
   sample_cols = 2:ncol(df),
   ref_cols = NULL
 )

@@ -9,14 +9,14 @@
 #' @importFrom dplyr %>%
 #' @importFrom dplyr mutate
 #' @importFrom dplyr summarise
-#' @importFrom dplyr mutate_at
-#' @importFrom dplyr filter_at
-#' @importFrom dplyr select_at
-#' @importFrom dplyr group_by_at
-#' @importFrom dplyr all_vars
+#' @importFrom dplyr .data
+#' @importFrom dplyr group_by
+#' @importFrom dplyr all_of
+#' @importFrom dplyr across
 #' @importFrom tidyr separate_rows
-#' @importFrom tidyr gather
-#' @importFrom tidyr spread
+#' @importFrom tidyr pivot_longer
+#' @importFrom tidyr pivot_wider
+#' @importFrom rlang .data
 #' 
 #' @param data the input data frame
 #' @param sample_cols (character) columns to be used for peptide aggregation
@@ -50,7 +50,7 @@
 #' )
 #' 
 #' aggregate_pep(
-#'   data = df, 
+#'   data = df,
 #'   sample_cols = c("ab1", "ab2", "ab3"),
 #'   protein_col = "protein",
 #'   peptide_col = "peptide",
@@ -94,17 +94,16 @@ aggregate_pep <- function(
     
     if (is.character(split_char) & is.character(n_protein_col)) {
       data <- data %>% 
-        separate_rows(!!protein_col, sep = split_char) %>%
-        mutate_at(sample_cols, function(x) x / .[[n_protein_col]])
+        separate_rows({{protein_col}}, sep = split_char) %>%
+        mutate(across(sample_cols, function(x) x / .data[[n_protein_col]]))
     } else {
       stop("arguments 'split_char' and 'n_protein_col' must be character")
     }
   }
   
   # filter peptides by weight threshold
-  # TODO add rule to keep all peptides if no peptide exceeds weight threshold
   if (!is.null(weight_col)) {
-    data <- filter_at(data, weight_col, all_vars(. >= weight_threshold))
+    data <- filter(data, .data[[weight_col]] >= weight_threshold)
   }
   
   # add dummy column with unity weights if not supplied
@@ -112,23 +111,22 @@ aggregate_pep <- function(
     weight_col = "weight"
     data <- mutate(data, weight = 1)
   }
-  
+  print(sample_cols)
   # rearrange data frame to long format, in order to summarise
-  data %>% gather(key = sample, value = intensity, sample_cols) %>%
+  data %>% pivot_longer(all_of(sample_cols), names_to = "sample", values_to = "intensity") %>%
     
     # group by protein ID and sample
-    group_by_at(c("sample", protein_col)) %>%
+    group_by(sample, .data[[protein_col]]) %>%
     
     # summarise by applying method of choice
     summarise(
-      n_peptides = length(unique(get(peptide_col))),
-      intensity = do.call(methods[[method]], list(intensity, get(weight_col)))
+      n_peptides = length(unique(.data[[peptide_col]])),
+      intensity = do.call(methods[[method]], list(get("intensity"), get(weight_col)))
     ) %>%
     
     # spread samples on columns again
-    spread(sample, intensity) %>%
+    pivot_wider(names_from = "sample", values_from = "intensity") %>%
     
     # change order to peptide abundances as last
-    select_at(c(protein_col, "n_peptides", sample_cols))
-  
+    select(all_of(c(protein_col, "n_peptides", sample_cols)))
 }
