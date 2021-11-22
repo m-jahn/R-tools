@@ -51,8 +51,6 @@ abundances.
 ``` r
 # load additional dependencies
 library(Rtools)
-library(dplyr)
-library(tidyr)
 
 # generate data frame
 df <- data.frame(

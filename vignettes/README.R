@@ -8,8 +8,6 @@ set.seed(123)
 ## ---- message = FALSE, warning = FALSE----------------------------------------
 # load additional dependencies
 library(Rtools)
-library(dplyr)
-library(tidyr)
 
 # generate data frame
 df <- data.frame(
