@@ -28,8 +28,12 @@ analysis (default: 5)}
 Default is TRUE}
 }
 \value{
-a list with three objects, silhouette analysis data, and two summary plots
-  obtained using lattice graphics.
+A list with five objects
+  \code{data}: silhouette analysis data for each iteration, 
+  \code{data_summary}: silhouette analysis data concise summary, 
+  \code{optimal_n_clust}: optimal number of clusters, 
+  \code{plot_clusters}: plot silhouette widths for all number of clusters separately, 
+  \code{plot_summary}: plot silhouette widths summary
 }
 \description{
 Silhouette analysis identifies the number of clusters that have highest

@@ -18,6 +18,10 @@
 #' @importFrom dplyr distinct
 #' @importFrom dplyr select
 #' @importFrom dplyr all_of
+#' @importFrom dplyr group_by
+#' @importFrom dplyr summarize
+#' @importFrom dplyr arrange
+#' @importFrom dplyr desc
 #' @importFrom lattice xyplot
 #' @importFrom lattice panel.xyplot
 #' @importFrom lattice panel.grid
@@ -41,8 +45,12 @@
 #'   no cluster object, then the function performs a kmeans() clustering for the indicated
 #'   number of clusters.
 #' 
-#' @return a list with three objects, silhouette analysis data, and two summary plots
-#'   obtained using lattice graphics.
+#' @return A list with five objects
+#'   \code{data}: silhouette analysis data for each iteration, 
+#'   \code{data_summary}: silhouette analysis data concise summary, 
+#'   \code{optimal_n_clust}: optimal number of clusters, 
+#'   \code{plot_clusters}: plot silhouette widths for all number of clusters separately, 
+#'   \code{plot_summary}: plot silhouette widths summary
 #' 
 #' @examples
 #' # generate a random matrix that we use for clustering with the 
@@ -123,8 +131,9 @@ silhouette_analysis <- function(
   
   if (plot) {
     # plot single cluster averages
-    plot_clusters <- lattice::xyplot(clus_avg_widths ~ as.numeric(clus_sizes_cl) |
-        factor(n_cluster), df, groups = get("n_repeat"),
+    plot_clusters <- lattice::xyplot(get("clus_avg_widths") ~ 
+        as.numeric(get("clus_sizes_cl")) |
+        factor(get("n_cluster")), df, groups = get("n_repeat"),
       par.settings = latticeExtra::ggplot2like(),
       as.table = TRUE, border = FALSE, between = list(x = 0.5, y = 0.5),
       xlab = "individual cluster", ylab = "silhouette width",
@@ -141,7 +150,8 @@ silhouette_analysis <- function(
     df_summary <- dplyr::distinct(
       dplyr::select(df, dplyr::all_of(c("n_cluster", "n_repeat", "avg_width"))))
     
-    plot_summary <- lattice::xyplot(avg_width ~ n_cluster, df_summary,
+    plot_summary <- lattice::xyplot(get("avg_width") ~ get("n_cluster"),
+      df_summary,
       par.settings = latticeExtra::ggplot2like(),
       cex = 0.8, lwd = 1.5,
       xlab = "number of clusters", ylab = "average silhouette width",
@@ -155,8 +165,18 @@ silhouette_analysis <- function(
     )
   }
   
+  # determine optimal number of clusters
+  optimal_n_clust <- dplyr::group_by(df_summary, .data[["n_cluster"]])
+  optimal_n_clust <- dplyr::summarize(optimal_n_clust, avg_width = mean(.data[["avg_width"]]))
+  optimal_n_clust <- dplyr::arrange(optimal_n_clust, dplyr::desc(.data[["avg_width"]]))
+  optimal_n_clust <- optimal_n_clust[[1, "n_cluster"]]
+  
   # return list with results
-  result <- list(data = df)
+  result <- list(
+    data = df,
+    data_summary = df_summary,
+    optimal_n_clust = optimal_n_clust
+  )
   if (plot) {
     result$plot_clusters = plot_clusters
     result$plot_summary = plot_summary
