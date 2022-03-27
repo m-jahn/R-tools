@@ -1,7 +1,7 @@
 Rtools
 ================
 Michael Jahn,
-2021-11-22
+2022-03-27
 
 <!-- badges start -->
 
@@ -51,8 +51,6 @@ abundances.
 ``` r
 # load additional dependencies
 library(Rtools)
-library(dplyr)
-library(tidyr)
 
 # generate data frame
 df <- data.frame(

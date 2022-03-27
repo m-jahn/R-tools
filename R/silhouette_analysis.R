@@ -159,8 +159,8 @@ silhouette_analysis <- function(
         lattice::panel.grid(h = -1, v = -1, col = "white")
         lattice::panel.xyplot(x, y, ...)
         latticeExtra::panel.smoother(x, y, ...)
-        lattice::panel.abline(v = which.max(tapply(y, x, mean)),
-          lty = 2, col = grey(0.3), ...)
+        n_opt <- as.numeric(names(which.max(tapply(y, x, mean))))
+        lattice::panel.abline(v = n_opt, lty = 2, col = grey(0.3), ...)
       }
     )
   }
