@@ -1,7 +1,7 @@
 Rtools
 ================
 Michael Jahn,
-2022-03-27
+2022-09-01
 
 <!-- badges start -->
 
@@ -37,7 +37,7 @@ devtools::install_github("https://github.com/m-jahn/R-tools")
 
 ## Proteomics functions
 
-### aggregate\_pep
+### aggregate_pep
 
 Aggregate peptide abundances to protein abundances.
 
@@ -88,7 +88,7 @@ aggregate_pep(
     ## 6 F                1  50    57   100  
     ## 7 G                1  43    92    83
 
-### apply\_norm
+### apply_norm
 
 Apply normalization based on different published methods. This function
 is a wrapper applying different normalization functions from other
@@ -147,7 +147,41 @@ apply(df_norm[2:4], 2, median)
     ##    cond1    cond2    cond3 
     ## 39.23981 39.23981 39.23981
 
-### get\_topgo
+### fct_cluster
+
+Cluster levels of a factor based on a response and a grouping variable.
+The function changes the order of levels of a factor by clustering
+levels according to similarity of a second response variable, and an
+optional third grouping variable.
+
+``` r
+# set seed to obtain same values
+set.seed(123)
+
+# a data frame with 5 observations for 5 different groups (A to E)
+df <- data.frame(
+ fc = factor(rep(letters[1:5], 5)),
+ group = rep(LETTERS[1:5], each = 5),
+ response = rnorm(25)
+)
+
+# levels in alphabetical order
+levels(df$fc)
+```
+
+    ## [1] "a" "b" "c" "d" "e"
+
+``` r
+# reorder levels of "fc" by clustering values in "response" over "groups"
+df$fc <- with(df, fct_cluster(fc, group, response))
+
+# levels ordered by similarity of responses
+levels(df$fc)
+```
+
+    ## [1] "c" "a" "e" "b" "d"
+
+### get_topgo
 
 Convenience wrapper to TopGO package (Rahnenfueher et al.). This
 function carries out a TopGO gene ontology enrichment on a data set with
@@ -176,6 +210,9 @@ go_terms <- c(
 # and test which (randomly sampled) GO terms might be enriched in both groups.
 # We randomly sample 1 to 3 GO terms per gene. They need to be formatted as one
 # string of GO terms separated by "; ".
+# set seed to obtain same values
+set.seed(123)
+
 df <- data.frame(
   GeneID = LETTERS,
   cluster = rep(c(1, 2), each = 13),
@@ -189,20 +226,20 @@ df <- data.frame(
 get_topgo(df, selected.cluster = 1, topNodes = 5)
 ```
 
-    ##        GO.ID                                     Term Annotated Significant
-    ## 1 GO:0032787    monocarboxylic acid metabolic process         4           4
-    ## 2 GO:0016116             carotenoid metabolic process         3           3
-    ## 3 GO:0072330 monocarboxylic acid biosynthetic process         3           3
-    ## 4 GO:0006163      purine nucleotide metabolic process         5           4
-    ## 5 GO:0006164   purine nucleotide biosynthetic process         5           4
-    ##   Expected classicFisher weightedFisher elimFisher SigGenes
-    ## 1      2.0         0.048          0.048      0.048  A,C,K,M
-    ## 2      1.5         0.110          0.110      0.110    E,H,K
-    ## 3      1.5         0.110          1.000      0.110    A,K,M
-    ## 4      2.5         0.161          1.000      0.161  A,B,D,J
-    ## 5      2.5         0.161          1.000      0.161  A,B,D,J
+    ##        GO.ID                                   Term Annotated Significant
+    ## 1 GO:0044249          cellular biosynthetic process        16          11
+    ## 2 GO:0009058                   biosynthetic process        17          11
+    ## 3 GO:1901576 organic substance biosynthetic process        17          11
+    ## 4 GO:0018130       heterocycle biosynthetic process         8           6
+    ## 5 GO:0019438 aromatic compound biosynthetic process         8           6
+    ##   Expected classicFisher weightedFisher elimFisher              SigGenes
+    ## 1      8.0         0.021           0.45      0.021 A,B,C,D,E,F,I,J,K,L,M
+    ## 2      8.5         0.048           1.00      0.048 A,B,C,D,E,F,I,J,K,L,M
+    ## 3      8.5         0.048           0.30      0.048 A,B,C,D,E,F,I,J,K,L,M
+    ## 4      4.0         0.101           1.00      0.101           C,D,E,J,K,M
+    ## 5      4.0         0.101           1.00      0.101           C,D,E,J,K,M
 
-### silhouette\_analysis
+### silhouette_analysis
 
 Wrapper function to perform silhouette analysis on different cluster
 numbers. Silhouette analysis shows the clusters that have explanatory
@@ -224,7 +261,7 @@ clust <- hclust(dist(mat))
 plot(clust)
 ```
 
-![](/home/michael/Documents/SciLifeLab/Resources/R_projects/R-tools/vignettes/README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
 # perform silhouette analysis for 2 to 10 different clusters
@@ -235,9 +272,9 @@ print(sil_result$plot_clusters, split = c(1,1,2,1), more = TRUE)
 print(sil_result$plot_summary, split = c(2,1,2,1))
 ```
 
-![](/home/michael/Documents/SciLifeLab/Resources/R_projects/R-tools/vignettes/README_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
 
-### parse\_kegg\_brite
+### parse_kegg_brite
 
 Parse Kegg Brite xml files step-by-step. This script is a small utility
 to parse Kegg Brite XML files and return a regular data frame instead.
@@ -251,11 +288,11 @@ e.g. simply using a text editor:
     to 5) so that read.table knows how many columns to expect
 -   read raw data frame into R using read.table(“/path/to/file”, fill =
     TRUE, sep = “, row.names = NULL, stringsAsFactors = FALSE, quote
-    =”")
+    =”“)
 
 ## Growth models
 
-### baranyi\_fun
+### baranyi_fun
 
 Simulate growth according to the Baranyi growth model.
 
@@ -270,9 +307,9 @@ biomass <- baranyi_fun(
 plot(0:100, biomass)
 ```
 
-![](/home/michael/Documents/SciLifeLab/Resources/R_projects/R-tools/vignettes/README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
-### gompertzm\_fun
+### gompertzm_fun
 
 Simulate growth according to the Gompertz modified growth model.
 
@@ -287,4 +324,4 @@ biomass <- gompertzm_fun(
 plot(0:100, biomass)
 ```
 
-![](/home/michael/Documents/SciLifeLab/Resources/R_projects/R-tools/vignettes/README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](vignettes/README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->

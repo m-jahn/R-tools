@@ -62,6 +62,26 @@ print(df_norm)
 apply(df[2:4], 2, median)
 apply(df_norm[2:4], 2, median)
 
+## -----------------------------------------------------------------------------
+# set seed to obtain same values
+set.seed(123)
+
+# a data frame with 5 observations for 5 different groups (A to E)
+df <- data.frame(
+ fc = factor(rep(letters[1:5], 5)),
+ group = rep(LETTERS[1:5], each = 5),
+ response = rnorm(25)
+)
+
+# levels in alphabetical order
+levels(df$fc)
+
+# reorder levels of "fc" by clustering values in "response" over "groups"
+df$fc <- with(df, fct_cluster(fc, group, response))
+
+# levels ordered by similarity of responses
+levels(df$fc)
+
 ## ---- message = FALSE, warning = FALSE----------------------------------------
 # The get_topgo function will require the TopGO package
 # as an additional dependency that is not automatically
@@ -82,6 +102,9 @@ go_terms <- c(
 # and test which (randomly sampled) GO terms might be enriched in both groups.
 # We randomly sample 1 to 3 GO terms per gene. They need to be formatted as one
 # string of GO terms separated by "; ".
+# set seed to obtain same values
+set.seed(123)
+
 df <- data.frame(
   GeneID = LETTERS,
   cluster = rep(c(1, 2), each = 13),
