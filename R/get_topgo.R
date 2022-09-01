@@ -86,7 +86,7 @@ get_topgo <- function(df = NULL, GeneID = NULL, Gene.ontology.IDs = NULL,
     
   }
   
-  if (class(df) == "data.frame" & 
+  if (inherits(df, "data.frame") &
     all(c("cluster", "GeneID", "Gene.ontology.IDs") %in% colnames(df))) {
     
     input <- with(df, 
