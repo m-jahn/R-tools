@@ -47,9 +47,19 @@ df <- data.frame(
 levels(df$fc)
 
 # reorder levels of "fc" by clustering values in "response" over "groups"
-df$fc <- with(df, fct_cluster(fc, group, response))
+levels(with(df, fct_cluster(fc, group, response)))
 
-# levels ordered by similarity of responses
-levels(df$fc)
+# also works with NA or infinite values;
+# infinite values are internally replaced with NA to allow clustering
+df[c(1,6,7), "response"] <- -Inf
+levels(with(df, fct_cluster(fc, group, response)))
+
+# missing combinations of variables are completed with NA internally
+df <- df[-c(1,6), ]
+levels(with(df, fct_cluster(fc, group, response)))
+
+# different order of factor level does not change result
+df$fc <- factor(df$fc, c("c","b","e","d", "a"))
+levels(with(df, fct_cluster(fc, group, response)))
 
 }

@@ -1,7 +1,7 @@
 Rtools
 ================
 Michael Jahn,
-2022-09-01
+2022-10-17
 
 <!-- badges start -->
 
@@ -160,9 +160,9 @@ set.seed(123)
 
 # a data frame with 5 observations for 5 different groups (A to E)
 df <- data.frame(
- fc = factor(rep(letters[1:5], 5)),
- group = rep(LETTERS[1:5], each = 5),
- response = rnorm(25)
+  fc = factor(rep(letters[1:5], 5)),
+  group = rep(LETTERS[1:5], each = 5),
+  response = rnorm(25)
 )
 
 # levels in alphabetical order
@@ -173,10 +173,32 @@ levels(df$fc)
 
 ``` r
 # reorder levels of "fc" by clustering values in "response" over "groups"
-df$fc <- with(df, fct_cluster(fc, group, response))
+levels(with(df, fct_cluster(fc, group, response)))
+```
 
-# levels ordered by similarity of responses
-levels(df$fc)
+    ## [1] "c" "a" "e" "b" "d"
+
+``` r
+# also works with NA or infinite values;
+# infinite values are internally replaced with NA to allow clustering
+df[c(1,6,7), "response"] <- -Inf
+levels(with(df, fct_cluster(fc, group, response)))
+```
+
+    ## [1] "c" "a" "e" "b" "d"
+
+``` r
+# missing combinations of variables are completed with NA internally
+df <- df[-c(1,6), ]
+levels(with(df, fct_cluster(fc, group, response)))
+```
+
+    ## [1] "c" "a" "e" "b" "d"
+
+``` r
+# different order of factor level does not change result
+df$fc <- factor(df$fc, c("c","b","e","d", "a"))
+levels(with(df, fct_cluster(fc, group, response)))
 ```
 
     ## [1] "c" "a" "e" "b" "d"

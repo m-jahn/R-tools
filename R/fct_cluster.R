@@ -9,6 +9,7 @@
 #' @importFrom stats hclust
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr tibble
+#' @importFrom tidyr complete
 #' @importFrom tibble column_to_rownames
 #' 
 #' @param variable (vector)
@@ -41,18 +42,30 @@
 #' levels(df$fc)
 #' 
 #' # reorder levels of "fc" by clustering values in "response" over "groups"
-#' df$fc <- with(df, fct_cluster(fc, group, response))
+#' levels(with(df, fct_cluster(fc, group, response)))
 #' 
-#' # levels ordered by similarity of responses
-#' levels(df$fc)
+#' # also works with NA or infinite values;
+#' # infinite values are internally replaced with NA to allow clustering
+#' df[c(1,6,7), "response"] <- -Inf
+#' levels(with(df, fct_cluster(fc, group, response)))
+#' 
+#' # missing combinations of variables are completed with NA internally
+#' df <- df[-c(1,6), ]
+#' levels(with(df, fct_cluster(fc, group, response)))
+#' 
+#' # different order of factor level does not change result
+#' df$fc <- factor(df$fc, c("c","b","e","d", "a"))
+#' levels(with(df, fct_cluster(fc, group, response)))
 #' 
 #' @export
 fct_cluster <- function(variable, group, value, method = "ward.D2") {
+  variable <- as.character(variable)
   df <- tidyr::tibble(variable = variable, group = group, value = value)
-  df <- tidyr::pivot_wider(df, names_from = group, values_from = value)
+  df <- tidyr::complete(df, variable, group)
+  df <- tidyr::pivot_wider(df, names_from = group, values_from = value,
+    values_fn = function(x){replace(x, is.infinite(x), NA)})
   mat <- as.matrix(tibble::column_to_rownames(df, var = "variable"))
   cl <- stats::hclust(dist(mat), method = method)
   ord <- stats::order.dendrogram(stats::as.dendrogram(cl))
-  factor(variable, unique(variable)[ord])
+  factor(variable, rownames(mat)[ord])
 }
-
