@@ -65,7 +65,8 @@ fct_cluster <- function(variable, group, value, method = "ward.D2") {
   df <- tidyr::pivot_wider(df, names_from = group, values_from = value,
     values_fn = function(x){replace(x, is.infinite(x), NA)})
   mat <- as.matrix(tibble::column_to_rownames(df, var = "variable"))
-  cl <- stats::hclust(dist(mat), method = method)
+  dist_mat <- replace(dist(mat), is.na(dist(mat)), 0)
+  cl <- stats::hclust(dist_mat, method = "ward.D2")
   ord <- stats::order.dendrogram(stats::as.dendrogram(cl))
   factor(variable, rownames(mat)[ord])
 }
