@@ -11,7 +11,7 @@ vignette: >
 ---
 
 <!-- badges start -->
-[![R build status](https://github.com/m-jahn/R-tools/workflows/R-CMD-check/badge.svg)](https://github.com/m-jahn/R-tools/actions)
+[![R-CMD-check](https://github.com/m-jahn/R-tools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/m-jahn/R-tools/actions/workflows/R-CMD-check.yaml)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/m-jahn)
 ![GitHub issues](https://img.shields.io/github/issues/m-jahn/R-tools)
 ![GitHub last commit](https://img.shields.io/github/last-commit/m-jahn/R-tools)

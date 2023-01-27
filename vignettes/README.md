@@ -1,7 +1,7 @@
 Rtools
 ================
 Michael Jahn,
-2022-10-17
+2022-10-28
 
 <!-- badges start -->
 
@@ -283,7 +283,7 @@ clust <- hclust(dist(mat))
 plot(clust)
 ```
 
-![](vignettes/README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](/home/michael/Documents/Scilifelab/Resources/R_projects/R-tools/vignettes/README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
 # perform silhouette analysis for 2 to 10 different clusters
@@ -294,7 +294,7 @@ print(sil_result$plot_clusters, split = c(1,1,2,1), more = TRUE)
 print(sil_result$plot_summary, split = c(2,1,2,1))
 ```
 
-![](vignettes/README_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
+![](/home/michael/Documents/Scilifelab/Resources/R_projects/R-tools/vignettes/README_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
 
 ### parse_kegg_brite
 
@@ -329,7 +329,7 @@ biomass <- baranyi_fun(
 plot(0:100, biomass)
 ```
 
-![](vignettes/README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](/home/michael/Documents/Scilifelab/Resources/R_projects/R-tools/vignettes/README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ### gompertzm_fun
 
@@ -346,4 +346,4 @@ biomass <- gompertzm_fun(
 plot(0:100, biomass)
 ```
 
-![](vignettes/README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](/home/michael/Documents/Scilifelab/Resources/R_projects/R-tools/vignettes/README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
